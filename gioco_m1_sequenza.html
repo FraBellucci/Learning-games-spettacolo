@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M1 – Sequenza: Obblighi di Sicurezza negli Eventi</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#1a237e,#283593,#3949ab);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#1a237e}.btn-white:hover{background:#E8EAF6}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.hidden{display:none!important}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#1a237e}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#E8EAF6;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#1a237e;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:14px 20px;display:flex;flex-direction:column;gap:10px;overflow:hidden;min-height:0;flex:1}
+.round-title{font-size:13px;font-weight:700;color:#1a237e;text-align:center;flex-shrink:0}
+.round-desc{font-size:11px;color:#666;text-align:center;flex-shrink:0;margin-bottom:4px}
+.seq-area{display:flex;gap:14px;flex:1;min-height:0;overflow:hidden}
+.seq-col{flex:1;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.seq-col h3{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;margin-bottom:2px}
+.seq-item{padding:10px 12px;border:2px solid #E0E0E0;border-radius:8px;font-size:12px;color:#333;cursor:grab;transition:all .2s;background:#fff;line-height:1.4;flex-shrink:0}
+.seq-item:hover{border-color:#283593;background:#E8EAF6}
+.seq-item.dragging{opacity:.4;border-style:dashed}
+.seq-item.placed{background:#E8EAF6;border-color:#283593;cursor:default}
+.drop-slot{padding:10px 12px;border:2px dashed #BDBDBD;border-radius:8px;font-size:12px;color:#999;min-height:42px;display:flex;align-items:center;transition:all .2s;flex-shrink:0}
+.drop-slot.over{border-color:#283593;background:#E8EAF6}
+.drop-slot.filled{border-style:solid;border-color:#283593;background:#E8EAF6;color:#1a237e;font-weight:600;cursor:pointer}
+.drop-slot.correct{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20}
+.drop-slot.wrong{border-color:#C62828;background:#FFEBEE;color:#B71C1C}
+.bottom-bar{display:flex;justify-content:space-between;align-items:center;flex-shrink:0;margin-top:4px}
+.btn-check{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:9px 24px;font-size:12px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-check:disabled{opacity:.5;cursor:default}
+.feedback-bar{font-size:12px;font-weight:600;padding:4px 12px;border-radius:6px}
+.feedback-bar.ok{background:#E8F5E9;color:#1B5E20}
+.feedback-bar.ko{background:#FFEBEE;color:#B71C1C}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#1a237e,#283593);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#1a237e}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#1a237e,#283593);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#128221; Metti in Ordine — Obblighi di Sicurezza</h1><p>Modulo 1 — Obblighi del datore di lavoro negli eventi</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#128221;</div>
+    <h2>Ordina le fasi della sicurezza negli eventi</h2>
+    <p>Ogni round presenta una serie di azioni da mettere nell'ordine corretto. Trascina gli elementi dalla colonna sinistra negli slot a destra nella sequenza giusta, poi verifica.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Trascina le azioni</div>
+      <div class="how-step"><span class="num">2</span>Mettile in ordine</div>
+      <div class="how-step"><span class="num">3</span>Verifica la sequenza</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="round-title" id="roundTitle">Round 1 di 3</div>
+    <div class="round-desc" id="roundDesc"></div>
+    <div class="seq-area">
+      <div class="seq-col" id="sourceCol"><h3>Azioni da ordinare</h3></div>
+      <div class="seq-col" id="targetCol"><h3>Ordine corretto (dall'alto in basso)</h3></div>
+    </div>
+    <div class="bottom-bar">
+      <div class="feedback-bar hidden" id="fbBar"></div>
+      <button class="btn-check" id="btnCheck" onclick="checkOrder()" disabled>Controlla ordine</button>
+    </div>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den" id="resDen">su 3</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ROUNDS=[
+  {title:"Obblighi del datore di lavoro per la sicurezza",desc:"Ordina le fasi che il datore di lavoro deve seguire per garantire la sicurezza in un evento.",steps:["Pianificazione preventiva dei rischi","Ispezione del luogo e delle attrezzature","Formazione specifica dei lavoratori","Verifica della conformita' normativa","Monitoraggio continuo durante l'evento"]},
+  {title:"Preparazione del Piano di Sicurezza Coordinato (PSC)",desc:"Ordina i passi per redigere un PSC completo e aggiornato.",steps:["Analisi preliminare dei rischi specifici dell'evento","Identificazione delle misure preventive e protettive","Definizione delle responsabilita' operative","Redazione delle procedure di evacuazione","Aggiornamento del PSC in base ai sopralluoghi"]},
+  {title:"Gestione della documentazione di sicurezza",desc:"Ordina le azioni per una corretta gestione documentale.",steps:["Raccolta dei certificati di conformita' delle strutture","Verifica delle qualifiche e formazione del personale","Redazione del Documento di Valutazione dei Rischi","Distribuzione dei documenti ai responsabili di area","Archiviazione e aggiornamento periodico della documentazione"]}
+];
+let curRound=0,score=0,placed=[];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startGame(){document.getElementById('instrPage').classList.add('hidden');document.getElementById('gamePage').classList.remove('hidden');curRound=0;score=0;loadRound();}
+
+function loadRound(){
+  const r=ROUNDS[curRound];
+  placed=new Array(r.steps.length).fill(null);
+  document.getElementById('roundTitle').textContent='Round '+(curRound+1)+' di '+ROUNDS.length;
+  document.getElementById('roundDesc').textContent=r.desc;
+  document.getElementById('fbBar').classList.add('hidden');
+  document.getElementById('btnCheck').disabled=true;
+
+  const src=document.getElementById('sourceCol');
+  const tgt=document.getElementById('targetCol');
+  src.innerHTML='<h3>Azioni da ordinare</h3>';
+  tgt.innerHTML='<h3>Ordine corretto (dall\'alto in basso)</h3>';
+
+  const mixed=shuffle([...r.steps]);
+  mixed.forEach((s,i)=>{
+    const d=document.createElement('div');
+    d.className='seq-item';d.textContent=s;d.draggable=true;d.dataset.text=s;
+    d.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',s);d.classList.add('dragging');});
+    d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+    src.appendChild(d);
+  });
+
+  for(let i=0;i<r.steps.length;i++){
+    const slot=document.createElement('div');
+    slot.className='drop-slot';slot.textContent=(i+1)+'. Trascina qui';slot.dataset.idx=i;
+    slot.addEventListener('dragover',e=>{e.preventDefault();slot.classList.add('over');});
+    slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+    slot.addEventListener('drop',e=>{
+      e.preventDefault();slot.classList.remove('over');
+      const txt=e.dataTransfer.getData('text/plain');
+      if(slot.classList.contains('filled')){
+        const old=placed[i];placed[i]=null;
+        const restored=document.createElement('div');restored.className='seq-item';restored.textContent=old;restored.draggable=true;restored.dataset.text=old;
+        restored.addEventListener('dragstart',ev=>{ev.dataTransfer.setData('text/plain',old);restored.classList.add('dragging');});
+        restored.addEventListener('dragend',()=>restored.classList.remove('dragging'));
+        src.appendChild(restored);
+      }
+      placed[i]=txt;slot.textContent=(i+1)+'. '+txt;slot.classList.add('filled');
+      const srcItem=src.querySelector('.seq-item[data-text="'+CSS.escape(txt)+'"]');
+      if(srcItem)srcItem.remove();
+      checkReady();
+    });
+    slot.addEventListener('click',()=>{
+      if(!slot.classList.contains('filled'))return;
+      const txt=placed[slot.dataset.idx];placed[slot.dataset.idx]=null;
+      slot.textContent=(parseInt(slot.dataset.idx)+1)+'. Trascina qui';slot.classList.remove('filled');
+      const restored=document.createElement('div');restored.className='seq-item';restored.textContent=txt;restored.draggable=true;restored.dataset.text=txt;
+      restored.addEventListener('dragstart',ev=>{ev.dataTransfer.setData('text/plain',txt);restored.classList.add('dragging');});
+      restored.addEventListener('dragend',()=>restored.classList.remove('dragging'));
+      src.appendChild(restored);
+      checkReady();
+    });
+    tgt.appendChild(slot);
+  }
+}
+
+function checkReady(){document.getElementById('btnCheck').disabled=placed.includes(null);}
+
+function checkOrder(){
+  const r=ROUNDS[curRound];let correct=0;
+  const slots=document.getElementById('targetCol').querySelectorAll('.drop-slot');
+  slots.forEach((s,i)=>{
+    if(placed[i]===r.steps[i]){s.classList.add('correct');correct++;}
+    else{s.classList.add('wrong');s.textContent=(i+1)+'. '+placed[i]+' (era: '+r.steps[i]+')';}
+  });
+  const fb=document.getElementById('fbBar');
+  if(correct===r.steps.length){score++;fb.className='feedback-bar ok';fb.textContent='Perfetto! Tutte in ordine!';}
+  else{fb.className='feedback-bar ko';fb.textContent=correct+'/'+r.steps.length+' posizioni corrette.';}
+  fb.classList.remove('hidden');
+  document.getElementById('btnCheck').textContent=curRound<ROUNDS.length-1?'Prossimo round &#9654;':'Vedi risultati';
+  document.getElementById('btnCheck').onclick=nextRound;document.getElementById('btnCheck').disabled=false;
+  document.querySelectorAll('.seq-item').forEach(i=>i.draggable=false);
+}
+
+function nextRound(){curRound++;if(curRound>=ROUNDS.length)showResult();else{document.getElementById('btnCheck').textContent='Controlla ordine';document.getElementById('btnCheck').onclick=checkOrder;loadRound();}}
+
+function showResult(){
+  document.getElementById('gamePage').classList.add('hidden');document.getElementById('resultPage').classList.remove('hidden');
+  document.getElementById('resScore').textContent=score;document.getElementById('resDen').textContent='su '+ROUNDS.length;
+  let e,t,d;
+  if(score===ROUNDS.length){e='&#127942;';t='Eccellente!';d='Hai ordinato correttamente tutte le sequenze. Conosci a fondo gli obblighi di sicurezza negli eventi.';}
+  else if(score>=2){e='&#128077;';t='Quasi perfetto!';d='Buona conoscenza delle procedure. Rivedi le sequenze sbagliate per completare la preparazione.';}
+  else{e='&#128170;';t='Da ripassare';d='Le procedure di sicurezza hanno un ordine preciso e importante. Rileggi il modulo e riprova.';}
+  document.getElementById('resTitle').innerHTML=e+' '+t;document.getElementById('resText').textContent=d;
+}
+
+function resetGame(){curRound=0;score=0;document.getElementById('resultPage').classList.add('hidden');document.getElementById('gamePage').classList.add('hidden');document.getElementById('instrPage').classList.remove('hidden');document.getElementById('btnCheck').textContent='Controlla ordine';document.getElementById('btnCheck').onclick=checkOrder;}
+</script>
+</body>
+</html>

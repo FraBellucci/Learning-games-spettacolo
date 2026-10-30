@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M4 – Scenario: Piani di Emergenza</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#b71c1c,#c62828,#e53935);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#b71c1c,#c62828);color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#b71c1c}.btn-white:hover{background:#FFEBEE}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.progress-bar{height:4px;background:#FFEBEE;flex-shrink:0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#b71c1c,#ef5350);transition:width .4s}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.hidden{display:none!important}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#b71c1c}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.instr-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:4px}
+.chip{background:#FFEBEE;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;color:#b71c1c}
+.btn-start{background:linear-gradient(135deg,#b71c1c,#c62828);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:16px 20px;display:flex;flex-direction:column;gap:10px;overflow:hidden;min-height:0;flex:1}
+.scenario-counter{font-size:11px;color:#888;text-align:right}
+.scenario-card{background:#FFEBEE;border-radius:8px;padding:12px 14px;border-left:4px solid #b71c1c;font-size:13px;color:#333;line-height:1.6;flex-shrink:0}
+.scenario-card strong{color:#b71c1c;font-size:11px;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px}
+.options-grid{display:flex;flex-direction:column;gap:7px;flex-shrink:0}
+.opt-btn{padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-weight:500;text-align:left;transition:all .2s;color:#333;line-height:1.4}
+.opt-btn:hover:not(:disabled){border-color:#c62828;background:#FFEBEE;transform:translateY(-1px)}
+.opt-btn.correct{border-color:#2e7d32;background:#e8f5e9;color:#1b5e20;font-weight:700}
+.opt-btn.wrong{border-color:#c62828;background:#ffebee;color:#b71c1c}
+.opt-btn:disabled{cursor:default}
+.feedback-box{border-radius:8px;padding:11px 14px;font-size:12px;line-height:1.6;flex-shrink:0}
+.feedback-box.correct-fb{background:#e8f5e9;border-left:4px solid #2e7d32;color:#1b5e20}
+.feedback-box.wrong-fb{background:#ffebee;border-left:4px solid #c62828;color:#b71c1c}
+.btn-next{align-self:flex-end;background:linear-gradient(135deg,#b71c1c,#c62828);color:#fff;padding:9px 24px;font-size:12px;border-radius:8px;font-weight:700}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#b71c1c,#c62828);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}
+.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#b71c1c}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#b71c1c,#c62828);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#x1F6A8; Scenario &#8212; Piani di Emergenza</h1><p>Modulo 4 &#8212; Gestire le emergenze negli eventi</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#x1F6A8;</div>
+    <h2>Sai gestire un'emergenza durante un evento?</h2>
+    <p>Ogni scenario ti mette di fronte a una situazione critica reale nel settore degli eventi. Scegli l'azione corretta tra le tre opzioni disponibili.</p>
+    <div class="instr-chips">
+      <span class="chip">Evacuazione</span>
+      <span class="chip">Primo soccorso</span>
+      <span class="chip">Protocolli meteo</span>
+      <span class="chip">Gestione folla</span>
+      <span class="chip">Antincendio</span>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="scenario-counter">Scenario <span id="scNum">1</span> di 6</div>
+    <div class="scenario-card"><strong>&#x1F6A8; Scenario</strong><span id="scText"></span></div>
+    <div class="options-grid" id="optGrid"></div>
+    <div class="feedback-box hidden" id="feedbackBox"></div>
+    <button class="btn-next hidden" id="btnNext" onclick="nextScenario()">Avanti &#9654;</button>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 6</div></div>
+    <h2 id="resTitle"></h2><p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCENARIOS=[
+  {text:"Durante un concerto all'aperto, un temporale improvviso si avvicina rapidamente. Il radar meteo indica fulmini a 15 km. Come responsabile della sicurezza, cosa fai?",correct:0,options:["Attivi il protocollo meteo: sospendi l'evento, informi il pubblico tramite annunci e avvii l'evacuazione ordinata verso le aree coperte designate","Aspetti che il temporale arrivi per valutare la reale intensità prima di decidere","Chiedi agli artisti di continuare per evitare il panico tra il pubblico"],feedback:"La sicurezza preventiva è fondamentale. Con fulmini a 15 km, il rischio è imminente. Il protocollo meteo deve essere attivato con anticipo sufficiente per un'evacuazione ordinata."},
+  {text:"Durante il montaggio di un palco, un operaio segnala una crepa in un elemento portante della struttura. L'evento inizia tra 4 ore.",correct:0,options:["Fermi immediatamente il montaggio, fai verificare la struttura da un ingegnere e non procedi finché non c'è il via libera tecnico","Rinforzi l'elemento con materiale disponibile e continui il montaggio per rispettare i tempi","Sostituisci solo l'elemento danneggiato e riprendi il montaggio senza ulteriori verifiche"],feedback:"Una crepa in un elemento portante richiede la verifica completa da parte di un tecnico abilitato. Continuare senza autorizzazione mette a rischio la vita dei lavoratori e del pubblico."},
+  {text:"Durante una fiera, un visitatore ha un malore grave. Il punto di primo soccorso è al lato opposto del padiglione, a 200 metri.",correct:0,options:["Chiami immediatamente il 118, attivi la squadra di primo soccorso interna e liberi il percorso per i soccorritori","Trasporti il visitatore al punto di primo soccorso con l'aiuto di altri visitatori","Chiedi al visitatore di raggiungere autonomamente il punto di primo soccorso"],feedback:"In caso di malore grave, la priorità è chiamare il 118 e attivare i soccorritori interni. Spostare una persona in condizioni critiche senza competenze mediche può aggravare la situazione."},
+  {text:"Stai conducendo una simulazione di evacuazione. Noti che una delle uscite di emergenza è bloccata da attrezzature tecniche.",correct:0,options:["Interrompi la simulazione, fai rimuovere immediatamente le attrezzature e documenti la non conformità per il report","Continui la simulazione usando le altre uscite disponibili e segnali il problema dopo","Prendi nota mentalmente del problema e lo risolvi dopo la simulazione"],feedback:"Le vie di fuga devono essere SEMPRE libere e praticabili. Un'uscita bloccata è una violazione grave che va corretta immediatamente, non rimandata."},
+  {text:"Ricevi la segnalazione di un principio di incendio nel backstage durante uno spettacolo teatrale. Il pubblico in sala non è ancora consapevole.",correct:0,options:["Attivi l'allarme antincendio, avvii il piano di evacuazione e coordini le squadre di emergenza secondo le procedure stabilite","Mandi un tecnico a spegnere l'incendio con l'estintore senza allertare il pubblico per evitare il panico","Interrompi lo spettacolo e chiedi al pubblico di uscire ordinatamente senza attivare l'allarme formale"],feedback:"Il piano di emergenza prevede l'attivazione dell'allarme come prima azione. Solo le procedure codificate garantiscono una risposta coordinata. Tentare di gestire autonomamente un incendio ritarda i soccorsi."},
+  {text:"Al termine di un grande evento, durante il deflusso del pubblico, si crea un assembramento pericoloso in corrispondenza dell'uscita principale.",correct:0,options:["Attivi il protocollo di gestione folla: apri le uscite secondarie, dirigi il flusso con il personale e comunichi via altoparlante le alternative","Chiudi temporaneamente l'uscita principale finché non si riduce la folla","Lasci che il flusso si regoli naturalmente — il pubblico troverà le altre uscite"],feedback:"L'assembramento in uscita è uno dei rischi più gravi negli eventi. La gestione attiva del flusso con personale formato, apertura di uscite alternative e comunicazione chiara è essenziale per prevenire incidenti da calca."}
+];
+
+let current=0,score=0,order=[];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startGame(){
+  document.getElementById('instrPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.remove('hidden');
+  order=shuffle([...Array(SCENARIOS.length).keys()]);
+  current=0;score=0;
+  loadScenario();
+}
+
+function loadScenario(){
+  var s=SCENARIOS[order[current]];
+  document.getElementById('scNum').textContent=current+1;
+  document.getElementById('scText').textContent=s.text;
+  document.getElementById('feedbackBox').classList.add('hidden');
+  document.getElementById('btnNext').classList.add('hidden');
+  document.getElementById('progressFill').style.width=((current/6)*100)+'%';
+  var grid=document.getElementById('optGrid');
+  grid.innerHTML='';
+  var indices=[0,1,2];
+  shuffle(indices);
+  indices.forEach(function(origIdx){
+    var b=document.createElement('button');
+    b.className='opt-btn';
+    b.textContent=s.options[origIdx];
+    b.onclick=function(){answer(origIdx,b,s);};
+    grid.appendChild(b);
+  });
+}
+
+function answer(idx,btn,s){
+  var btns=document.querySelectorAll('.opt-btn');
+  btns.forEach(function(b){b.disabled=true;});
+  var fb=document.getElementById('feedbackBox');
+  if(idx===s.correct){
+    btn.classList.add('correct');
+    score++;
+    fb.className='feedback-box correct-fb';
+    fb.innerHTML='<b>&#10004; Corretto!</b> '+s.feedback;
+  }else{
+    btn.classList.add('wrong');
+    btns.forEach(function(b){
+      if(b.textContent===s.options[s.correct]) b.classList.add('correct');
+    });
+    fb.className='feedback-box wrong-fb';
+    fb.innerHTML='<b>&#10008; Non corretto.</b> '+s.feedback;
+  }
+  fb.classList.remove('hidden');
+  document.getElementById('btnNext').classList.remove('hidden');
+}
+
+function nextScenario(){
+  current++;
+  if(current>=SCENARIOS.length) showResult();
+  else loadScenario();
+}
+
+function showResult(){
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('resScore').textContent=score;
+  var pct=Math.round((score/6)*100);
+  var emoji,title,desc;
+  if(pct>=80){
+    emoji='&#127942;';title='Ottimo lavoro!';
+    desc='Sai gestire le emergenze con competenza e prontezza. Le tue decisioni proteggerebbero efficacemente lavoratori e pubblico durante un evento.';
+  }else if(pct>=50){
+    emoji='&#128077;';title='Buona base!';
+    desc='Conosci diversi aspetti della gestione delle emergenze, ma alcune situazioni richiedono un approfondimento. Rivedi i protocolli di evacuazione e primo soccorso.';
+  }else{
+    emoji='&#128170;';title='Da ripassare';
+    desc='La gestione delle emergenze negli eventi richiede conoscenze specifiche. Rileggi il modulo sui piani di emergenza e riprova: ogni decisione corretta può salvare vite.';
+  }
+  document.getElementById('resTitle').innerHTML=emoji+' '+title;
+  document.getElementById('resText').textContent=desc;
+}
+
+function resetGame(){
+  current=0;score=0;
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('instrPage').classList.remove('hidden');
+  document.getElementById('progressFill').style.width='0%';
+}
+</script>
+</body>
+</html>

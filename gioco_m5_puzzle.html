@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M5 – Puzzle Documentale: Sicurezza Eventi</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#2E7D32,#388E3C,#43A047);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#2E7D32,#388E3C);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#2E7D32}.btn-white:hover{background:#E8F5E9}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.hidden{display:none!important}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#2E7D32}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#E8F5E9;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#2E7D32;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#2E7D32,#388E3C);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:10px 16px;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0;flex:1}
+.doc-header{display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.doc-title{font-size:13px;font-weight:700;color:#2E7D32}
+.doc-counter{font-size:11px;color:#888}
+.score-tag{background:#E8F5E9;color:#2E7D32;padding:3px 10px;border-radius:12px;font-weight:700;font-size:11px}
+.game-area{display:flex;gap:12px;flex:1;min-height:0;overflow:hidden}
+.doc-panel{flex:1.3;background:#FAFAFA;border:1px solid #E0E0E0;border-radius:8px;padding:10px 12px;overflow-y:auto;font-size:12px;line-height:1.7;color:#333}
+.doc-panel h3{font-size:13px;color:#2E7D32;margin-bottom:8px;font-weight:700;border-bottom:2px solid #2E7D32;padding-bottom:4px}
+.doc-line{margin-bottom:6px}
+.blank-slot{display:inline-block;min-width:120px;padding:3px 8px;border:2px dashed #BDBDBD;border-radius:6px;background:#fff;color:#999;font-size:11px;font-style:italic;vertical-align:middle;transition:all .2s;cursor:default;text-align:center}
+.blank-slot.over{border-color:#2E7D32;background:#E8F5E9}
+.blank-slot.filled{border-style:solid;border-color:#2E7D32;background:#E8F5E9;color:#1B5E20;font-style:normal;font-weight:600;cursor:pointer}
+.blank-slot.correct{border-color:#1B5E20;background:#C8E6C9;color:#1B5E20}
+.blank-slot.wrong{border-color:#C62828;background:#FFEBEE;color:#B71C1C}
+.frag-panel{flex:0.7;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.frag-panel h3{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;margin-bottom:2px}
+.frag-item{padding:8px 10px;border:2px solid #C8E6C9;border-radius:8px;font-size:11px;color:#333;cursor:grab;transition:all .2s;background:#fff;line-height:1.4}
+.frag-item:hover{border-color:#2E7D32;background:#E8F5E9}
+.frag-item.dragging{opacity:.4;border-style:dashed}
+.frag-item.used{opacity:.35;cursor:default;border-color:#E0E0E0;background:#F5F5F5}
+.bottom-bar{display:flex;justify-content:space-between;align-items:center;flex-shrink:0;margin-top:4px}
+.feedback-bar{font-size:12px;font-weight:600;padding:4px 12px;border-radius:6px}
+.feedback-bar.ok{background:#E8F5E9;color:#1B5E20}
+.feedback-bar.ko{background:#FFEBEE;color:#B71C1C}
+.btn-check{background:linear-gradient(135deg,#2E7D32,#388E3C);color:#fff;padding:9px 24px;font-size:12px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-check:disabled{opacity:.5;cursor:default}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#2E7D32,#388E3C);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#2E7D32}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#2E7D32,#388E3C);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#128196; Puzzle Documentale &#8212; Sicurezza Eventi</h1><p>Modulo 5 &#8212; Completa i documenti di sicurezza</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#128196;</div>
+    <h2>Completa i documenti di sicurezza</h2>
+    <p>Trascina i frammenti di testo corretti negli spazi vuoti per completare 3 importanti documenti di sicurezza: DVR, PSC e POS. Ogni documento ha 5 sezioni da completare.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Leggi il documento</div>
+      <div class="how-step"><span class="num">2</span>Trascina i frammenti</div>
+      <div class="how-step"><span class="num">3</span>Verifica le risposte</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="doc-header">
+      <span class="doc-title" id="docTitle"></span>
+      <span class="doc-counter" id="docCounter"></span>
+      <span class="score-tag" id="scoreTag">0 / 15</span>
+    </div>
+    <div class="game-area">
+      <div class="doc-panel" id="docPanel"></div>
+      <div class="frag-panel" id="fragPanel"><h3>Frammenti</h3></div>
+    </div>
+    <div class="bottom-bar">
+      <div class="feedback-bar hidden" id="fbBar"></div>
+      <button class="btn-check" id="btnCheck" onclick="checkDoc()" disabled>Verifica documento</button>
+    </div>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den" id="resDen">su 15</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var DOCS=[
+  {
+    name:"Documento di Valutazione dei Rischi (DVR)",
+    lines:[
+      {pre:"Il DVR deve contenere una relazione sulla valutazione di tutti i ",post:".",ans:"rischi per la sicurezza e la salute"},
+      {pre:"L’indicazione delle ",post:" adottate.",ans:"misure di prevenzione e protezione"},
+      {pre:"Il programma delle misure per garantire il ",post:" nel tempo.",ans:"miglioramento dei livelli di sicurezza"},
+      {pre:"L’individuazione delle ",post:" per la loro attuazione.",ans:"procedure e dei ruoli organizzativi"},
+      {pre:"L’indicazione del ",post:" e del medico competente.",ans:"responsabile del servizio di prevenzione"}
+    ],
+    distractors:["obblighi del committente","registro degli infortuni","piano di montaggio"]
+  },
+  {
+    name:"Piano di Sicurezza e Coordinamento (PSC)",
+    lines:[
+      {pre:"Il PSC contiene l’identificazione e l’analisi dei ",post:".",ans:"rischi specifici dell’area di lavoro"},
+      {pre:"Le procedure di ",post:" in caso di emergenza.",ans:"evacuazione e primo soccorso"},
+      {pre:"La stima dei ",post:" relativi alle lavorazioni.",ans:"costi della sicurezza"},
+      {pre:"Le prescrizioni operative per lo ",post:" in sicurezza.",ans:"svolgimento delle attività"},
+      {pre:"Il cronoprogramma dei lavori con le ",post:" tra le imprese.",ans:"fasi di coordinamento"}
+    ],
+    distractors:["nomina del preposto","verbale di consegna","certificato di agibilità"]
+  },
+  {
+    name:"Piano Operativo di Sicurezza (POS)",
+    lines:[
+      {pre:"I dati identificativi dell’",post:" esecutrice.",ans:"impresa"},
+      {pre:"Le specifiche ",post:" relative al cantiere.",ans:"attività e lavorazioni"},
+      {pre:"L’elenco dei ",post:" in dotazione ai lavoratori.",ans:"dispositivi di protezione individuale"},
+      {pre:"Le procedure di ",post:" delle attrezzature.",ans:"manutenzione e verifica"},
+      {pre:"La documentazione relativa alla ",post:" dei lavoratori.",ans:"formazione e informazione"}
+    ],
+    distractors:["planimetria del comune","registro presenze visitatori","analisi di mercato"]
+  }
+];
+
+var curDoc=0,totalScore=0,placed=[];
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function startGame(){
+  document.getElementById('instrPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.remove('hidden');
+  curDoc=0;totalScore=0;
+  document.getElementById('scoreTag').textContent='0 / 15';
+  loadDoc();
+}
+
+function loadDoc(){
+  var d=DOCS[curDoc];
+  placed=[];for(var i=0;i<d.lines.length;i++) placed.push(null);
+  document.getElementById('docTitle').textContent=d.name;
+  document.getElementById('docCounter').textContent='Documento '+(curDoc+1)+' di '+DOCS.length;
+  document.getElementById('fbBar').classList.add('hidden');
+  document.getElementById('btnCheck').disabled=true;
+  document.getElementById('btnCheck').textContent='Verifica documento';
+  document.getElementById('btnCheck').onclick=checkDoc;
+
+  var dp=document.getElementById('docPanel');
+  dp.innerHTML='<h3>'+d.name+'</h3>';
+  for(var i=0;i<d.lines.length;i++){
+    var line=document.createElement('div');
+    line.className='doc-line';
+    var span1=document.createTextNode(d.lines[i].pre);
+    var slot=document.createElement('span');
+    slot.className='blank-slot';
+    slot.textContent='trascina qui';
+    slot.dataset.idx=String(i);
+    slot.addEventListener('dragover',slotDragOver);
+    slot.addEventListener('dragleave',slotDragLeave);
+    slot.addEventListener('drop',slotDrop);
+    slot.addEventListener('click',slotClick);
+    var span2=document.createTextNode(d.lines[i].post);
+    line.appendChild(span1);
+    line.appendChild(slot);
+    line.appendChild(span2);
+    dp.appendChild(line);
+  }
+
+  var fp=document.getElementById('fragPanel');
+  fp.innerHTML='<h3>Frammenti</h3>';
+  var frags=[];
+  for(var i=0;i<d.lines.length;i++) frags.push(d.lines[i].ans);
+  for(var i=0;i<d.distractors.length;i++) frags.push(d.distractors[i]);
+  shuffle(frags);
+  for(var i=0;i<frags.length;i++){
+    var fi=document.createElement('div');
+    fi.className='frag-item';
+    fi.textContent=frags[i];
+    fi.draggable=true;
+    fi.dataset.text=frags[i];
+    fi.addEventListener('dragstart',fragDragStart);
+    fi.addEventListener('dragend',fragDragEnd);
+    fp.appendChild(fi);
+  }
+}
+
+function fragDragStart(e){
+  if(this.classList.contains('used')){e.preventDefault();return;}
+  e.dataTransfer.setData('text/plain',this.dataset.text);
+  this.classList.add('dragging');
+}
+function fragDragEnd(){this.classList.remove('dragging');}
+
+function slotDragOver(e){e.preventDefault();this.classList.add('over');}
+function slotDragLeave(){this.classList.remove('over');}
+
+function slotDrop(e){
+  e.preventDefault();
+  var slot=e.currentTarget;
+  slot.classList.remove('over');
+  var txt=e.dataTransfer.getData('text/plain');
+  var idx=parseInt(slot.dataset.idx);
+
+  if(slot.classList.contains('filled') && placed[idx]!==null){
+    restoreFrag(placed[idx]);
+    placed[idx]=null;
+  }
+
+  placed[idx]=txt;
+  slot.textContent=txt;
+  slot.classList.add('filled');
+
+  var fp=document.getElementById('fragPanel');
+  var items=fp.querySelectorAll('.frag-item');
+  for(var i=0;i<items.length;i++){
+    if(items[i].dataset.text===txt && !items[i].classList.contains('used')){
+      items[i].classList.add('used');
+      items[i].draggable=false;
+      break;
+    }
+  }
+  checkReady();
+}
+
+function slotClick(){
+  var slot=this;
+  if(!slot.classList.contains('filled'))return;
+  var idx=parseInt(slot.dataset.idx);
+  var txt=placed[idx];
+  placed[idx]=null;
+  slot.textContent='trascina qui';
+  slot.classList.remove('filled');
+  restoreFrag(txt);
+  checkReady();
+}
+
+function restoreFrag(txt){
+  var fp=document.getElementById('fragPanel');
+  var items=fp.querySelectorAll('.frag-item');
+  for(var i=0;i<items.length;i++){
+    if(items[i].dataset.text===txt && items[i].classList.contains('used')){
+      items[i].classList.remove('used');
+      items[i].draggable=true;
+      break;
+    }
+  }
+}
+
+function checkReady(){
+  var allFilled=true;
+  for(var i=0;i<placed.length;i++){if(placed[i]===null){allFilled=false;break;}}
+  document.getElementById('btnCheck').disabled=!allFilled;
+}
+
+function checkDoc(){
+  var d=DOCS[curDoc];
+  var roundScore=0;
+  var slots=document.getElementById('docPanel').querySelectorAll('.blank-slot');
+  for(var i=0;i<slots.length;i++){
+    if(placed[i]===d.lines[i].ans){
+      slots[i].classList.add('correct');
+      roundScore++;
+    } else {
+      slots[i].classList.add('wrong');
+      slots[i].title='Risposta corretta: '+d.lines[i].ans;
+    }
+  }
+  totalScore+=roundScore;
+  document.getElementById('scoreTag').textContent=totalScore+' / 15';
+
+  var fb=document.getElementById('fbBar');
+  if(roundScore===d.lines.length){
+    fb.className='feedback-bar ok';
+    fb.textContent='Perfetto! Documento completato correttamente! ('+roundScore+'/'+d.lines.length+')';
+  } else {
+    fb.className='feedback-bar ko';
+    fb.textContent=roundScore+'/'+d.lines.length+' sezioni corrette. Passa il mouse sugli errori per la risposta.';
+  }
+  fb.classList.remove('hidden');
+
+  var items=document.getElementById('fragPanel').querySelectorAll('.frag-item');
+  for(var i=0;i<items.length;i++){items[i].draggable=false;}
+  var allSlots=document.getElementById('docPanel').querySelectorAll('.blank-slot');
+  for(var i=0;i<allSlots.length;i++){
+    allSlots[i].removeEventListener('click',slotClick);
+    allSlots[i].removeEventListener('dragover',slotDragOver);
+    allSlots[i].removeEventListener('dragleave',slotDragLeave);
+    allSlots[i].removeEventListener('drop',slotDrop);
+  }
+
+  var btn=document.getElementById('btnCheck');
+  if(curDoc<DOCS.length-1){
+    btn.textContent='Prossimo documento ▶';
+    btn.onclick=nextDoc;
+    btn.disabled=false;
+  } else {
+    btn.textContent='Vedi risultati';
+    btn.onclick=showResult;
+    btn.disabled=false;
+  }
+}
+
+function nextDoc(){
+  curDoc++;
+  loadDoc();
+}
+
+function showResult(){
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  document.getElementById('resScore').textContent=totalScore;
+  document.getElementById('resDen').textContent='su 15';
+  var pct=Math.round(totalScore/15*100);
+  var e,t,desc;
+  if(pct>=80){
+    e='&#127942;';t='Eccellente!';
+    desc='Conosci a fondo la documentazione di sicurezza. Hai completato correttamente i documenti DVR, PSC e POS.';
+  } else if(pct>=50){
+    e='&#128077;';t='Buon lavoro!';
+    desc='Hai una buona conoscenza dei documenti di sicurezza. Rivedi le sezioni in cui hai sbagliato per migliorare.';
+  } else {
+    e='&#128170;';t='Da ripassare';
+    desc='La documentazione di sicurezza è fondamentale. Rileggi il modulo 5 e riprova a completare i documenti.';
+  }
+  document.getElementById('resTitle').innerHTML=e+' '+t;
+  document.getElementById('resText').textContent=desc;
+}
+
+function resetGame(){
+  curDoc=0;totalScore=0;
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('instrPage').classList.remove('hidden');
+  document.getElementById('btnCheck').textContent='Verifica documento';
+  document.getElementById('btnCheck').onclick=checkDoc;
+}
+</script>
+</body>
+</html>

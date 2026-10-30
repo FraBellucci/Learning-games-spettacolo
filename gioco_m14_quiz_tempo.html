@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M14 – Quiz a Tempo: Miglioramento Continuo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#004D40,#00695C,#00796B);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#004D40,#00695C);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#004D40}.btn-white:hover{background:#E0F2F1}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.progress-bar{height:4px;background:#E0F2F1;flex-shrink:0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#004D40,#26A69A);transition:width .4s}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.hidden{display:none!important}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#004D40}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#E0F2F1;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#004D40;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#004D40,#00695C);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:14px 20px;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0;flex:1}
+.status-bar{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#888;flex-shrink:0}
+.score-tag{background:#E0F2F1;color:#004D40;padding:3px 10px;border-radius:12px;font-weight:700}
+.timer-wrap{background:#E0F2F1;border-radius:6px;overflow:hidden;height:22px;position:relative;flex-shrink:0}
+.timer-bar{height:100%;background:linear-gradient(90deg,#004D40,#26A69A);transition:width .1s linear;border-radius:6px}
+.timer-bar.danger{background:linear-gradient(90deg,#C62828,#EF5350)}
+.timer-text{position:absolute;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#004D40}
+.question-card{background:#E0F2F1;border-left:4px solid #004D40;border-radius:8px;padding:14px 16px;font-size:13px;color:#333;font-weight:500;line-height:1.6;flex-shrink:0}
+.options{display:flex;flex-direction:column;gap:6px;flex:1;overflow-y:auto;min-height:0}
+.opt-btn{width:100%;text-align:left;padding:10px 14px;border:2px solid #E0E0E0;border-radius:8px;font-size:12px;color:#333;background:#fff;cursor:pointer;transition:all .2s;line-height:1.5}
+.opt-btn:hover:not(:disabled){border-color:#00695C;background:#E0F2F1}
+.opt-btn.correct{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20;font-weight:600}
+.opt-btn.wrong{border-color:#C62828;background:#FFEBEE;color:#B71C1C}
+.opt-btn:disabled{cursor:default}
+.feedback-box{border-radius:8px;padding:10px 14px;font-size:11px;line-height:1.6;flex-shrink:0}
+.feedback-box.correct-fb{background:#E8F5E9;border-left:4px solid #2E7D32;color:#1B5E20}
+.feedback-box.wrong-fb{background:#FFEBEE;border-left:4px solid #C62828;color:#B71C1C}
+.feedback-box.timeout-fb{background:#FFF3E0;border-left:4px solid #E65100;color:#BF360C}
+.btn-next{align-self:flex-end;background:linear-gradient(135deg,#004D40,#00695C);color:#fff;padding:8px 20px;font-size:12px;border-radius:8px;font-weight:700;flex-shrink:0}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#004D40,#00695C);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#004D40}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#004D40,#00695C);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#9200; Quiz a Tempo &#8212; Miglioramento Continuo</h1><p>Modulo 14 &#8212; Strategie di miglioramento continuo</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#9200;</div>
+    <h2>Quanto ne sai sul miglioramento continuo?</h2>
+    <p>15 domande a risposta multipla con un timer di 15 secondi ciascuna. Rispondi prima che scada il tempo! Metti alla prova le tue conoscenze su audit, leadership, KPI e cultura della sicurezza.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Leggi la domanda</div>
+      <div class="how-step"><span class="num">2</span>Scegli la risposta</div>
+      <div class="how-step"><span class="num">3</span>Batti il tempo!</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il quiz &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="status-bar">
+      <span>Domanda <span id="qNum">1</span> di 15</span>
+      <span class="score-tag" id="scoreTag">0 corrette</span>
+    </div>
+    <div class="timer-wrap"><div class="timer-bar" id="timerBar" style="width:100%"></div><div class="timer-text" id="timerText">15s</div></div>
+    <div class="question-card" id="questionText"></div>
+    <div class="options" id="optionsBox"></div>
+    <div class="feedback-box hidden" id="feedbackBox"></div>
+    <button class="btn-next hidden" id="btnNext" onclick="nextQuestion()">Prossima &#9654;</button>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 15</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var QS=[
+{q:"Qual e' l'obiettivo principale di un audit interno sulla sicurezza?",
+ opts:["Identificare aree di miglioramento e verificare la conformita' alle procedure","Assegnare sanzioni ai dipendenti che non rispettano le regole","Redigere un nuovo documento di valutazione dei rischi","Formare il personale sulle procedure operative standard"],c:0,
+ fb:"L'audit interno ha lo scopo di verificare la conformita' e individuare opportunita' di miglioramento, non di sanzionare."},
+{q:"Le piattaforme digitali per la comunicazione del team servono principalmente a:",
+ opts:["Sostituire completamente le riunioni in presenza","Facilitare lo scambio di informazioni in tempo reale e documentare le decisioni","Controllare le attivita' individuali dei singoli lavoratori","Ridurre i costi di formazione del personale"],c:1,
+ fb:"Le piattaforme digitali migliorano la comunicazione in tempo reale e la tracciabilita' delle decisioni prese."},
+{q:"Un sistema di gestione integrata della sicurezza si basa su:",
+ opts:["La delega completa della sicurezza al responsabile designato","L'acquisto delle migliori tecnologie disponibili sul mercato","Il ciclo Plan-Do-Check-Act applicato a tutti i processi","La stesura di un manuale di sicurezza il piu' dettagliato possibile"],c:2,
+ fb:"Il ciclo PDCA (Plan-Do-Check-Act) e' il fondamento dei sistemi di gestione integrata, garantendo un miglioramento continuo e sistematico."},
+{q:"La leadership aziendale nella sicurezza significa:",
+ opts:["Dimostrare impegno visibile e coinvolgere attivamente tutti i livelli organizzativi","Delegare tutte le responsabilita' al responsabile della sicurezza","Investire esclusivamente in tecnologie di protezione avanzate","Applicare sanzioni severe per ogni violazione riscontrata"],c:0,
+ fb:"La leadership nella sicurezza richiede un impegno visibile e concreto da parte della dirigenza, coinvolgendo tutti i livelli dell'organizzazione."},
+{q:"Qual e' il primo passo di un processo di miglioramento continuo?",
+ opts:["La formazione di tutto il personale sulle nuove procedure","L'acquisto di nuove attrezzature di sicurezza","L'analisi dello stato attuale e l'identificazione delle criticita'","La revisione completa del documento di valutazione dei rischi"],c:2,
+ fb:"Prima di migliorare, bisogna conoscere lo stato attuale: l'analisi delle criticita' e' il punto di partenza del ciclo di miglioramento."},
+{q:"Gli indicatori di performance (KPI) per la sicurezza negli eventi servono a:",
+ opts:["Misurare l'efficacia delle misure adottate e guidare le decisioni future","Classificare i lavoratori in base alla loro produttivita'","Calcolare i costi assicurativi per l'organizzazione","Determinare il numero minimo di addetti alla sicurezza"],c:0,
+ fb:"I KPI permettono di quantificare l'efficacia delle misure di sicurezza e forniscono dati oggettivi per orientare le decisioni strategiche."},
+{q:"Un approccio sistemico alla sicurezza considera:",
+ opts:["Solo gli aspetti tecnici delle attrezzature utilizzate","Esclusivamente le normative vigenti e la loro applicazione","L'interazione tra persone, processi, tecnologie e ambiente come un sistema unico","Principalmente i costi economici delle misure di prevenzione"],c:2,
+ fb:"L'approccio sistemico analizza l'organizzazione come un sistema integrato dove persone, processi, tecnologie e ambiente interagiscono."},
+{q:"La cultura della sicurezza in un'organizzazione si misura attraverso:",
+ opts:["Il numero di certificazioni ottenute dall'azienda","Il budget annuale destinato alla sicurezza","Il comportamento quotidiano dei lavoratori e la qualita' delle segnalazioni spontanee","La quantita' di corsi di formazione erogati ogni anno"],c:2,
+ fb:"La vera cultura della sicurezza si manifesta nei comportamenti quotidiani e nella propensione dei lavoratori a segnalare spontaneamente rischi e near miss."},
+{q:"Le riunioni periodiche di revisione della sicurezza devono:",
+ opts:["Essere limitate ai soli responsabili della sicurezza","Coinvolgere tutti i livelli e produrre azioni concrete con scadenze definite","Concentrarsi esclusivamente sugli incidenti avvenuti nel periodo","Svolgersi solo quando si verificano problemi significativi"],c:1,
+ fb:"Le riunioni di revisione efficaci coinvolgono rappresentanti di tutti i livelli e si concludono con azioni concrete, responsabili e scadenze."},
+{q:"Il benchmarking nella sicurezza degli eventi consiste nel:",
+ opts:["Copiare integralmente le procedure di un'altra organizzazione","Confrontare le proprie pratiche con quelle delle organizzazioni eccellenti del settore","Stabilire standard minimi di sicurezza per il proprio settore","Classificare gli eventi in base al loro livello di rischio"],c:1,
+ fb:"Il benchmarking e' un confronto strutturato con le migliori pratiche del settore per identificare opportunita' di miglioramento."},
+{q:"Un near miss (quasi incidente) deve essere:",
+ opts:["Ignorato se non ha causato danni a persone o cose","Segnalato, analizzato e utilizzato per prevenire incidenti futuri","Gestito internamente senza documentazione formale","Comunicato solo al responsabile della sicurezza per valutazione"],c:1,
+ fb:"Ogni near miss e' un'opportunita' di apprendimento: la segnalazione e l'analisi sistematica prevengono incidenti futuri potenzialmente gravi."},
+{q:"La formazione continua sulla sicurezza e' efficace quando:",
+ opts:["Viene erogata esclusivamente in modalita' e-learning","E' basata su casi reali, e' interattiva e viene aggiornata regolarmente","Si limita al rispetto degli obblighi normativi minimi","Utilizza lo stesso programma standard per tutti i ruoli aziendali"],c:1,
+ fb:"La formazione efficace utilizza casi reali del settore, metodologie interattive e viene costantemente aggiornata in base alle nuove esigenze."},
+{q:"I sistemi di monitoraggio digitale delle procedure permettono di:",
+ opts:["Eliminare completamente la necessita' di supervisione umana","Tracciare in tempo reale l'esecuzione dei compiti e identificare deviazioni","Sostituire la formazione del personale con avvisi automatici","Ridurre il numero di addetti alla sicurezza necessari"],c:1,
+ fb:"I sistemi digitali di monitoraggio consentono di verificare in tempo reale che le procedure vengano eseguite correttamente e di intervenire rapidamente in caso di deviazioni."},
+{q:"La comunicazione efficace sulla sicurezza richiede:",
+ opts:["L'uso esclusivo di comunicazioni scritte per avere una traccia documentale","Messaggi chiari, canali multipli e verifica della comprensione da parte dei destinatari","La diffusione di informazioni solo su base settimanale per non sovraccaricare il personale","L'invio di report dettagliati alla sola dirigenza aziendale"],c:1,
+ fb:"La comunicazione sulla sicurezza deve essere chiara, utilizzare piu' canali e verificare che il messaggio sia stato compreso dai destinatari."},
+{q:"Il miglioramento continuo della sicurezza richiede:",
+ opts:["Interventi straordinari solo dopo incidenti gravi","Un impegno costante, risorse dedicate e il coinvolgimento di tutta l'organizzazione","La revisione delle procedure solo quando cambiano le normative","L'assunzione di consulenti esterni per ogni aspetto della sicurezza"],c:1,
+ fb:"Il miglioramento continuo non e' episodico: richiede impegno costante, investimento di risorse e la partecipazione attiva di tutti i membri dell'organizzazione."}
+];
+
+var cur=0,score=0,order=[],timer=null,timeLeft=15,answered=false;
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function startGame(){
+  document.getElementById('instrPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.remove('hidden');
+  order=shuffle(Array.apply(null,{length:QS.length}).map(function(_,i){return i;}));
+  cur=0;score=0;loadQ();
+}
+
+function loadQ(){
+  answered=false;
+  var q=QS[order[cur]];
+  document.getElementById('qNum').textContent=cur+1;
+  document.getElementById('questionText').textContent=q.q;
+  document.getElementById('feedbackBox').classList.add('hidden');
+  document.getElementById('btnNext').classList.add('hidden');
+  document.getElementById('progressFill').style.width=((cur/15)*100)+'%';
+  document.getElementById('scoreTag').textContent=score+' corrette';
+
+  var optIdx=[];for(var i=0;i<q.opts.length;i++)optIdx.push(i);
+  shuffle(optIdx);
+
+  var box=document.getElementById('optionsBox');
+  box.innerHTML='';
+  for(var k=0;k<optIdx.length;k++){
+    var b=document.createElement('button');
+    b.className='opt-btn';
+    b.textContent=q.opts[optIdx[k]];
+    b.dataset.idx=optIdx[k];
+    b.onclick=function(){answer(parseInt(this.dataset.idx));};
+    box.appendChild(b);
+  }
+
+  timeLeft=15;
+  updateTimerDisplay();
+  if(timer)clearInterval(timer);
+  timer=setInterval(tick,100);
+}
+
+function tick(){
+  timeLeft-=0.1;
+  if(timeLeft<=0){timeLeft=0;clearInterval(timer);timer=null;timeExpired();}
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  var pct=(timeLeft/15)*100;
+  var bar=document.getElementById('timerBar');
+  bar.style.width=pct+'%';
+  bar.className=timeLeft<=5?'timer-bar danger':'timer-bar';
+  document.getElementById('timerText').textContent=Math.ceil(timeLeft)+'s';
+}
+
+function timeExpired(){
+  if(answered)return;
+  answered=true;
+  var q=QS[order[cur]];
+  var btns=document.getElementById('optionsBox').querySelectorAll('.opt-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    if(parseInt(btns[i].dataset.idx)===q.c)btns[i].classList.add('correct');
+  }
+  var fb=document.getElementById('feedbackBox');
+  fb.className='feedback-box timeout-fb';
+  fb.innerHTML='&#9203; Tempo scaduto! '+q.fb;
+  fb.classList.remove('hidden');
+  document.getElementById('btnNext').classList.remove('hidden');
+}
+
+function answer(idx){
+  if(answered)return;
+  answered=true;
+  if(timer){clearInterval(timer);timer=null;}
+  var q=QS[order[cur]];
+  var ok=(idx===q.c);
+  if(ok)score++;
+
+  var btns=document.getElementById('optionsBox').querySelectorAll('.opt-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    if(parseInt(btns[i].dataset.idx)===q.c)btns[i].classList.add('correct');
+    else if(parseInt(btns[i].dataset.idx)===idx&&!ok)btns[i].classList.add('wrong');
+  }
+
+  var fb=document.getElementById('feedbackBox');
+  if(ok){fb.className='feedback-box correct-fb';fb.innerHTML='&#10004; Corretto! '+q.fb;}
+  else{fb.className='feedback-box wrong-fb';fb.innerHTML='&#10008; Sbagliato. '+q.fb;}
+  fb.classList.remove('hidden');
+  document.getElementById('btnNext').classList.remove('hidden');
+  document.getElementById('scoreTag').textContent=score+' corrette';
+}
+
+function nextQuestion(){
+  cur++;
+  if(cur>=QS.length)showResult();
+  else loadQ();
+}
+
+function showResult(){
+  if(timer){clearInterval(timer);timer=null;}
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  document.getElementById('progressFill').style.width='100%';
+  document.getElementById('resScore').textContent=score;
+  var e,t,d;
+  if(score>=12){e='&#127942;';t='Eccellente!';d='Hai una conoscenza approfondita delle strategie di miglioramento continuo. Sei pronto a guidare il cambiamento nella tua organizzazione.';}
+  else if(score>=8){e='&#128077;';t='Buon risultato!';d='Conosci bene i principi del miglioramento continuo. Approfondisci gli aspetti su cui hai esitato per completare la tua preparazione.';}
+  else{e='&#128170;';t='Da approfondire';d='Il miglioramento continuo e\' un tema complesso ma fondamentale. Rileggi il modulo e riprova per consolidare le tue conoscenze.';}
+  document.getElementById('resTitle').innerHTML=e+' '+t;
+  document.getElementById('resText').textContent=d;
+}
+
+function resetGame(){
+  if(timer){clearInterval(timer);timer=null;}
+  cur=0;score=0;answered=false;
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('instrPage').classList.remove('hidden');
+  document.getElementById('progressFill').style.width='0%';
+}
+</script>
+</body>
+</html>

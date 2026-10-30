@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M7 – Vero o Falso: Eventi e Sicurezza Ambientale</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#00695C,#00897B,#009688);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#00695C,#00897B);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#00695C}.btn-white:hover{background:#E0F2F1}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.progress-bar{height:4px;background:#E0F2F1;flex-shrink:0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#00695C,#4DB6AC);transition:width .4s}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.hidden{display:none!important}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#00695C}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#E0F2F1;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#00695C;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#00695C,#00897B);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:18px 24px;display:flex;flex-direction:column;gap:12px;overflow:hidden;min-height:0;flex:1}
+.status-bar{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#888;flex-shrink:0}
+.score-tag{background:#E0F2F1;color:#00695C;padding:3px 10px;border-radius:12px;font-weight:700}
+.question-card{background:#E0F2F1;border-left:4px solid #00695C;border-radius:8px;padding:16px 18px;font-size:14px;color:#333;font-weight:500;line-height:1.6;min-height:70px;display:flex;align-items:center;flex-shrink:0}
+.vf-buttons{display:flex;gap:16px;justify-content:center;flex-shrink:0}
+.vf-btn{flex:1;max-width:180px;padding:16px;border-radius:10px;font-size:20px;font-weight:700;border:2px solid;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.vf-btn.true-btn{background:#E8F5E9;border-color:#2E7D32;color:#1B5E20}
+.vf-btn.true-btn:hover:not(:disabled){background:#C8E6C9;transform:scale(1.05)}
+.vf-btn.false-btn{background:#FFEBEE;border-color:#C62828;color:#B71C1C}
+.vf-btn.false-btn:hover:not(:disabled){background:#FFCDD2;transform:scale(1.05)}
+.vf-btn.selected-correct{border-width:3px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.vf-btn.selected-wrong{border-width:3px;opacity:.5}
+.vf-btn:disabled{cursor:default}
+.feedback-box{border-radius:8px;padding:11px 14px;font-size:12px;line-height:1.6;flex-shrink:0}
+.feedback-box.correct-fb{background:#E8F5E9;border-left:4px solid #2E7D32;color:#1B5E20}
+.feedback-box.wrong-fb{background:#FFEBEE;border-left:4px solid #C62828;color:#B71C1C}
+.btn-next{align-self:flex-end;background:linear-gradient(135deg,#00695C,#00897B);color:#fff;padding:9px 24px;font-size:12px;border-radius:8px;font-weight:700}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#00695C,#00897B);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}
+.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#00695C}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#00695C,#00897B);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#127915; Vero o Falso &#8212; Eventi e Sicurezza Ambientale</h1><p>Modulo 7 &#8212; Sicurezza in eventi outdoor e indoor</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#127915;</div>
+    <h2>Sicurezza negli eventi outdoor e indoor</h2>
+    <p>Antincendio, ventilazione, vie di fuga, impianti e materiali: conosci le regole per la sicurezza ambientale negli eventi? Rispondi Vero o Falso a 10 affermazioni e scopri il tuo livello di preparazione.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Leggi l'affermazione</div>
+      <div class="how-step"><span class="num">2</span>Scegli VERO o FALSO</div>
+      <div class="how-step"><span class="num">3</span>Leggi il feedback</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="status-bar">
+      <span>Domanda <span id="qNum">1</span> di 10</span>
+      <span class="score-tag" id="scoreTag">0 corrette</span>
+    </div>
+    <div class="question-card" id="questionText"></div>
+    <div class="vf-buttons">
+      <button class="vf-btn true-btn" id="btnTrue" onclick="answer(true)">&#10004;<span style="font-size:14px">VERO</span></button>
+      <button class="vf-btn false-btn" id="btnFalse" onclick="answer(false)">&#10008;<span style="font-size:14px">FALSO</span></button>
+    </div>
+    <div class="feedback-box hidden" id="feedbackBox"></div>
+    <button class="btn-next hidden" id="btnNext" onclick="nextQuestion()">Prossima &#9654;</button>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 10</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var QS=[
+  {q:"Le normative antincendio per eventi indoor richiedono materiali ignifughi certificati per tutte le strutture e gli allestimenti.",a:true,fb:"<b>Vero.</b> I materiali utilizzati per allestimenti indoor devono essere certificati come ignifughi o autoestinguenti secondo la normativa vigente, per ridurre il rischio di propagazione delle fiamme."},
+  {q:"In un evento outdoor, le vie di fuga possono essere definite solo il giorno stesso dell'evento.",a:false,fb:"<b>Falso.</b> Le vie di fuga devono essere pianificate e verificate in anticipo durante la fase di progettazione dell'evento. Il giorno stesso si effettuano solo verifiche finali sulla loro praticabilità."},
+  {q:"La ventilazione naturale è sempre sufficiente per garantire la sicurezza in un evento indoor.",a:false,fb:"<b>Falso.</b> La ventilazione naturale può non essere sufficiente, specialmente in spazi affollati. È necessario valutare la capacità dell'impianto di ventilazione rispetto al numero di persone previste e alla tipologia di evento."},
+  {q:"Il piano di sicurezza per un evento outdoor deve considerare le condizioni meteorologiche come fattore di rischio specifico.",a:true,fb:"<b>Vero.</b> Vento, pioggia, fulmini e temperature estreme sono rischi specifici degli eventi all'aperto che richiedono soglie di allerta, protocolli di sospensione e piani alternativi."},
+  {q:"Gli impianti elettrici temporanei per eventi non necessitano di collaudo se utilizzati per meno di 24 ore.",a:false,fb:"<b>Falso.</b> Tutti gli impianti elettrici temporanei devono essere collaudati e certificati da personale qualificato, indipendentemente dalla durata dell'evento. La sicurezza elettrica è un obbligo inderogabile."},
+  {q:"Le vie di fuga in un evento devono essere illuminate con illuminazione di emergenza autonoma.",a:true,fb:"<b>Vero.</b> L'illuminazione di emergenza deve essere autonoma (con batteria propria) e attivarsi automaticamente in caso di black-out, garantendo la visibilità delle vie di fuga per almeno 1 ora."},
+  {q:"In un evento indoor, la capienza massima può essere superata del 10% senza conseguenze sulla sicurezza.",a:false,fb:"<b>Falso.</b> La capienza massima è un limite inderogabile stabilito dalla licenza d'agibilità. Superarla, anche di poco, compromette l'evacuazione e aumenta i rischi per tutti i presenti."},
+  {q:"La manutenzione periodica degli estintori e dei sistemi antincendio è obbligatoria anche per eventi temporanei.",a:true,fb:"<b>Vero.</b> Gli estintori e i sistemi antincendio devono essere verificati e in regola con le manutenzioni. Per eventi temporanei si utilizzano dispositivi certificati e controllati prima dell'uso."},
+  {q:"I materiali pirotecnici per spettacoli indoor possono essere utilizzati senza autorizzazione specifica se l'evento dura meno di 2 ore.",a:false,fb:"<b>Falso.</b> L'uso di materiali pirotecnici richiede SEMPRE autorizzazione specifica, valutazione dei rischi dedicata, personale specializzato e distanze di sicurezza, indipendentemente dalla durata dell'evento."},
+  {q:"Il responsabile della sicurezza deve verificare che tutte le uscite di emergenza siano segnalate e prive di ostacoli prima dell'apertura al pubblico.",a:true,fb:"<b>Vero.</b> La verifica delle uscite di emergenza è una delle ultime operazioni prima dell'apertura al pubblico. Devono essere segnalate con cartelli luminosi, libere da ostacoli e facilmente apribili."}
+];
+
+var cur=0,score=0,order=[];
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function startGame(){document.getElementById('instrPage').classList.add('hidden');document.getElementById('gamePage').classList.remove('hidden');order=shuffle([0,1,2,3,4,5,6,7,8,9]);cur=0;score=0;loadQ();}
+function loadQ(){var q=QS[order[cur]];document.getElementById('qNum').textContent=cur+1;document.getElementById('questionText').textContent=q.q;document.getElementById('feedbackBox').classList.add('hidden');document.getElementById('btnNext').classList.add('hidden');document.getElementById('btnTrue').disabled=false;document.getElementById('btnFalse').disabled=false;document.getElementById('btnTrue').className='vf-btn true-btn';document.getElementById('btnFalse').className='vf-btn false-btn';document.getElementById('progressFill').style.width=((cur/10)*100)+'%';document.getElementById('scoreTag').textContent=score+' corrette';}
+function answer(ans){var q=QS[order[cur]];document.getElementById('btnTrue').disabled=true;document.getElementById('btnFalse').disabled=true;var fb=document.getElementById('feedbackBox');var ok=(ans===q.a);if(ok){score++;fb.className='feedback-box correct-fb';fb.innerHTML='&#10004; Corretto! '+q.fb;if(ans){document.getElementById('btnTrue').classList.add('selected-correct');}else{document.getElementById('btnFalse').classList.add('selected-correct');}}else{fb.className='feedback-box wrong-fb';fb.innerHTML='&#10008; Sbagliato. '+q.fb;if(ans){document.getElementById('btnTrue').classList.add('selected-wrong');document.getElementById('btnFalse').classList.add('selected-correct');}else{document.getElementById('btnFalse').classList.add('selected-wrong');document.getElementById('btnTrue').classList.add('selected-correct');}}fb.classList.remove('hidden');document.getElementById('btnNext').classList.remove('hidden');document.getElementById('scoreTag').textContent=score+' corrette';}
+function nextQuestion(){cur++;if(cur>=QS.length){showResult();}else{loadQ();}}
+function showResult(){document.getElementById('gamePage').classList.add('hidden');document.getElementById('resultPage').classList.remove('hidden');document.getElementById('progressFill').style.width='100%';document.getElementById('resScore').textContent=score;var e,t,d;if(score>=8){e='&#127942;';t='Ottimo lavoro!';d='Hai un\'eccellente conoscenza della sicurezza ambientale negli eventi. Sei preparato sia per contesti indoor che outdoor.';}else if(score>=5){e='&#128077;';t='Buona base!';d='Conosci diversi aspetti della sicurezza negli eventi. Rivedi i punti in cui hai sbagliato per rafforzare le tue competenze su antincendio e gestione ambientale.';}else{e='&#128170;';t='Da ripassare';d='La sicurezza ambientale negli eventi richiede un approfondimento. Rileggi il modulo 7 e riprova: antincendio, ventilazione e vie di fuga sono temi fondamentali.';}document.getElementById('resTitle').innerHTML=e+' '+t;document.getElementById('resText').textContent=d;}
+function resetGame(){cur=0;score=0;document.getElementById('resultPage').classList.add('hidden');document.getElementById('gamePage').classList.add('hidden');document.getElementById('instrPage').classList.remove('hidden');document.getElementById('progressFill').style.width='0%';}
+</script>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M3 – Quiz a Tempo: Strutture Temporanee</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#37474f,#546e7a,#78909c);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#37474f,#546e7a);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#37474f}.btn-white:hover{background:#ECEFF1}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.hidden{display:none!important}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#37474f}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#ECEFF1;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#37474f;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#37474f,#546e7a);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:14px 20px;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0;flex:1}
+.top-bar{display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.q-counter{font-size:11px;color:#888}
+.score-tag{background:#ECEFF1;color:#37474f;padding:3px 10px;border-radius:12px;font-weight:700;font-size:11px}
+.timer-wrap{height:6px;background:#ECEFF1;border-radius:3px;flex-shrink:0;overflow:hidden;position:relative}
+.timer-fill{height:100%;background:linear-gradient(90deg,#37474f,#78909c);border-radius:3px;transition:width .25s linear}
+.timer-fill.danger{background:linear-gradient(90deg,#c62828,#ef5350)}
+.timer-label{font-size:11px;color:#888;text-align:right;flex-shrink:0;margin-top:2px}
+.question-card{background:#ECEFF1;border-left:4px solid #37474f;border-radius:8px;padding:14px 16px;font-size:13px;color:#333;font-weight:500;line-height:1.5;flex-shrink:0}
+.options-grid{display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.opt-btn{padding:10px 14px;border:2px solid #e0e0e0;border-radius:8px;background:#fff;cursor:pointer;font-size:12px;font-weight:500;text-align:left;transition:all .2s;color:#333;line-height:1.4}
+.opt-btn:hover:not(:disabled){border-color:#546e7a;background:#ECEFF1;transform:translateY(-1px)}
+.opt-btn.correct{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20;font-weight:700}
+.opt-btn.wrong{border-color:#C62828;background:#FFEBEE;color:#B71C1C}
+.opt-btn.missed{border-color:#F57F17;background:#FFF8E1;color:#F57F17}
+.opt-btn:disabled{cursor:default}
+.feedback-box{border-radius:8px;padding:10px 14px;font-size:11px;line-height:1.5;flex-shrink:0}
+.feedback-box.correct-fb{background:#E8F5E9;border-left:4px solid #2E7D32;color:#1B5E20}
+.feedback-box.wrong-fb{background:#FFEBEE;border-left:4px solid #C62828;color:#B71C1C}
+.feedback-box.time-fb{background:#FFF8E1;border-left:4px solid #F57F17;color:#E65100}
+.btn-next{align-self:flex-end;background:linear-gradient(135deg,#37474f,#546e7a);color:#fff;padding:8px 20px;font-size:12px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#37474f,#546e7a);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#37474f}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#37474f,#546e7a);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#9201; Quiz a Tempo &#8212; Strutture Temporanee</h1><p>Modulo 3 &#8212; Sicurezza nelle strutture temporanee</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#9201;</div>
+    <h2>Quanto ne sai sulle strutture temporanee?</h2>
+    <p>15 domande a scelta multipla con un timer di 15 secondi ciascuna. Rispondi prima che il tempo scada! Ogni risposta corretta vale un punto; se il tempo finisce la risposta conta come errata.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Leggi la domanda</div>
+      <div class="how-step"><span class="num">2</span>Scegli la risposta</div>
+      <div class="how-step"><span class="num">3</span>Batti il timer!</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il quiz &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="top-bar">
+      <span class="q-counter">Domanda <span id="qNum">1</span> di 15</span>
+      <span class="score-tag" id="scoreTag">0 / 15</span>
+    </div>
+    <div class="timer-wrap"><div class="timer-fill" id="timerFill" style="width:100%"></div></div>
+    <div class="timer-label" id="timerLabel">15 secondi</div>
+    <div class="question-card" id="questionText"></div>
+    <div class="options-grid" id="optGrid"></div>
+    <div class="feedback-box hidden" id="feedbackBox"></div>
+    <button class="btn-next hidden" id="btnNext" onclick="nextQuestion()">Prossima &#9654;</button>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 15</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var QS=[
+  {q:"Qual e' il primo passo nella pianificazione di una struttura temporanea?",options:["Analisi dei carichi e delle sollecitazioni previste","Acquisto dei materiali di costruzione","Richiesta del permesso comunale","Stesura del contratto con il fornitore"],correct:0,fb:"L'analisi dei carichi e delle sollecitazioni e' il punto di partenza imprescindibile: solo conoscendo le forze in gioco si puo' progettare una struttura sicura."},
+  {q:"Chi e' responsabile della verifica di stabilita' delle strutture temporanee?",options:["Il montatore capo-squadra","L'organizzatore dell'evento","Un tecnico abilitato (ingegnere o architetto)","Il responsabile del servizio prevenzione"],correct:2,fb:"La verifica di stabilita' e' un atto tecnico che richiede competenze specifiche e deve essere firmata da un professionista abilitato (ingegnere o architetto)."},
+  {q:"Ogni quanto devono essere effettuate le verifiche di stabilita' durante un evento?",options:["Solo prima dell'inaugurazione","Prima dell'apertura al pubblico e periodicamente durante l'evento","Una volta al giorno","Solo in caso di maltempo"],correct:1,fb:"Le verifiche devono avvenire prima dell'apertura al pubblico e poi con cadenza regolare durante tutto lo svolgimento dell'evento, specialmente in caso di condizioni avverse."},
+  {q:"Cosa deve contenere il certificato di collaudo di un palco?",options:["Solo la data di montaggio","Capacita' portante massima, condizioni d'uso e firma del tecnico","Il nome del fabbricante e il prezzo","Le foto del montaggio completato"],correct:1,fb:"Il certificato di collaudo deve indicare la capacita' portante massima, le condizioni d'uso consentite e la firma del tecnico abilitato che ha eseguito il collaudo."},
+  {q:"Quale normativa italiana regola la sicurezza delle strutture temporanee per eventi?",options:["Solo il Codice Civile","Il D.M. 18/05/2007 e il D.Lgs. 81/2008","Solo il regolamento comunale","La norma UNI EN 1090"],correct:1,fb:"Il D.M. 18 maggio 2007 disciplina specificamente la sicurezza delle strutture allestite per spettacoli ed eventi, integrato dalle disposizioni del D.Lgs. 81/2008 sulla sicurezza nei luoghi di lavoro."},
+  {q:"In caso di vento forte, qual e' la prima azione da intraprendere per le strutture temporanee?",options:["Rinforzare gli ancoraggi con pesi aggiuntivi","Continuare l'evento monitorando la situazione","Evacuare l'area e verificare la stabilita' della struttura","Coprire la struttura con teli protettivi"],correct:2,fb:"La sicurezza delle persone viene prima di tutto: in caso di vento forte si evacua l'area e si procede alla verifica strutturale prima di qualsiasi altra decisione."},
+  {q:"Le tensostrutture devono essere ancorate al suolo con:",options:["Picchetti standard da campeggio","Sistemi di zavorra o ancoraggio dimensionati per i carichi di vento","Corde legate ad alberi o pali vicini","Sacchi di sabbia posizionati all'interno"],correct:1,fb:"I sistemi di ancoraggio devono essere dimensionati in base ai carichi di vento previsti nella zona, secondo i calcoli del progettista strutturale."},
+  {q:"Quale documento attesta l'idoneita' statica di una tribuna temporanea?",options:["Il contratto di noleggio della tribuna","Il verbale di montaggio","La relazione di calcolo firmata da un ingegnere strutturista","La fattura di acquisto dei materiali"],correct:2,fb:"La relazione di calcolo strutturale, firmata da un ingegnere abilitato, e' il documento tecnico che dimostra l'idoneita' statica della tribuna per l'uso previsto."},
+  {q:"La segnaletica di sicurezza nelle strutture temporanee deve indicare:",options:["Solo il nome dell'organizzatore","Vie di fuga, capacita' massima e divieti specifici","Solo il numero di telefono dei soccorsi","Il programma dell'evento"],correct:1,fb:"La segnaletica deve essere chiara e completa: vie di fuga, capacita' massima consentita, divieti (fumo, accesso non autorizzato) e indicazioni per i punti di raccolta."},
+  {q:"I materiali delle strutture temporanee devono essere:",options:["Scelti in base al minor costo disponibile","Certificati, conformi alle norme e verificati prima del montaggio","Usati senza particolari verifiche se gia' collaudati in passato","Approvati dal committente dell'evento"],correct:1,fb:"Ogni materiale deve avere certificazione di conformita', rispettare le norme tecniche applicabili e essere verificato prima di ogni montaggio per escludere deterioramenti o danni."},
+  {q:"Il monitoraggio delle strutture temporanee durante l'evento e':",options:["Facoltativo se il collaudo iniziale e' positivo","Necessario solo per eventi con piu' di 1000 persone","Obbligatorio e deve essere continuo con personale dedicato","Richiesto solo in caso di maltempo"],correct:2,fb:"Il monitoraggio continuo con personale dedicato e' obbligatorio per tutta la durata dell'evento: le condizioni possono cambiare rapidamente e richiedere interventi tempestivi."},
+  {q:"La coordinazione tra montatori e responsabile sicurezza avviene tramite:",options:["Messaggi informali via telefono","Riunioni di coordinamento e un piano operativo condiviso","Comunicazioni scritte inviate dopo il montaggio","Non e' prevista una coordinazione formale"],correct:1,fb:"Le riunioni di coordinamento e il piano operativo condiviso garantiscono che tutti i soggetti coinvolti operino secondo procedure concordate e sicure."},
+  {q:"In caso di anomalie strutturali durante il montaggio, bisogna:",options:["Proseguire e segnalare a fine lavori","Interrompere i lavori e avvisare il tecnico responsabile","Tentare di riparare autonomamente il problema","Documentare con foto e continuare il montaggio"],correct:1,fb:"Qualsiasi anomalia strutturale richiede l'immediata interruzione dei lavori e la comunicazione al tecnico responsabile, che valutera' le azioni correttive necessarie."},
+  {q:"Le strutture temporanee possono essere modificate durante l'evento?",options:["Si', liberamente in base alle esigenze artistiche","Solo con autorizzazione del tecnico e nuova verifica statica","No, in nessun caso","Si', se il committente lo richiede"],correct:1,fb:"Qualsiasi modifica alla struttura richiede l'autorizzazione del tecnico abilitato e una nuova verifica statica per garantire che le condizioni di sicurezza siano mantenute."},
+  {q:"La formazione dei montatori di strutture temporanee e':",options:["Consigliata ma non obbligatoria","Obbligatoria e specifica per il tipo di struttura","Necessaria solo per i capi squadra","Richiesta solo per strutture sopra i 6 metri"],correct:1,fb:"La formazione deve essere obbligatoria, specifica per il tipo di struttura (palchi, tralicci, tribune) e documentata, in conformita' con il D.Lgs. 81/2008."}
+];
+
+var cur=0,score=0,order=[],timer=null,timeLeft=15;
+
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+
+function startGame(){
+  document.getElementById('instrPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.remove('hidden');
+  order=shuffle(Array.apply(null,{length:QS.length}).map(function(_,i){return i;}));
+  cur=0;score=0;loadQ();
+}
+
+function loadQ(){
+  var q=QS[order[cur]];
+  document.getElementById('qNum').textContent=cur+1;
+  document.getElementById('scoreTag').textContent=score+' / '+QS.length;
+  document.getElementById('questionText').textContent=q.q;
+  document.getElementById('feedbackBox').classList.add('hidden');
+  document.getElementById('btnNext').classList.add('hidden');
+  document.getElementById('timerFill').className='timer-fill';
+  document.getElementById('timerFill').style.width='100%';
+  timeLeft=15;
+  document.getElementById('timerLabel').textContent='15 secondi';
+
+  var grid=document.getElementById('optGrid');
+  grid.innerHTML='';
+
+  var indices=[0,1,2,3];
+  shuffle(indices);
+  var correctShuffled=-1;
+  for(var k=0;k<indices.length;k++){
+    if(indices[k]===q.correct) correctShuffled=k;
+  }
+
+  for(var k=0;k<indices.length;k++){
+    var b=document.createElement('button');
+    b.className='opt-btn';
+    b.textContent=String.fromCharCode(65+k)+') '+q.options[indices[k]];
+    b.dataset.origIdx=indices[k];
+    b.dataset.shuffIdx=k;
+    b.onclick=(function(btn){return function(){answer(btn);};})(b);
+    grid.appendChild(b);
+  }
+
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timeLeft=15;
+  timer=setInterval(function(){
+    timeLeft-=0.25;
+    var pct=(timeLeft/15)*100;
+    document.getElementById('timerFill').style.width=pct+'%';
+    if(timeLeft<=5) document.getElementById('timerFill').className='timer-fill danger';
+    document.getElementById('timerLabel').textContent=Math.ceil(timeLeft)+' secondi';
+    if(timeLeft<=0){
+      clearInterval(timer);
+      timeExpired();
+    }
+  },250);
+}
+
+function timeExpired(){
+  var q=QS[order[cur]];
+  var btns=document.querySelectorAll('.opt-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].disabled=true;
+    if(parseInt(btns[i].dataset.origIdx)===q.correct) btns[i].classList.add('correct');
+  }
+  var fb=document.getElementById('feedbackBox');
+  fb.className='feedback-box time-fb';
+  fb.innerHTML='&#9200; Tempo scaduto! '+q.fb;
+  fb.classList.remove('hidden');
+  document.getElementById('btnNext').classList.remove('hidden');
+  document.getElementById('timerLabel').textContent='0 secondi';
+}
+
+function answer(btn){
+  clearInterval(timer);
+  var q=QS[order[cur]];
+  var chosen=parseInt(btn.dataset.origIdx);
+  var btns=document.querySelectorAll('.opt-btn');
+  for(var i=0;i<btns.length;i++) btns[i].disabled=true;
+
+  var fb=document.getElementById('feedbackBox');
+  if(chosen===q.correct){
+    score++;
+    btn.classList.add('correct');
+    fb.className='feedback-box correct-fb';
+    fb.innerHTML='&#10004; Corretto! '+q.fb;
+  }else{
+    btn.classList.add('wrong');
+    for(var i=0;i<btns.length;i++){
+      if(parseInt(btns[i].dataset.origIdx)===q.correct) btns[i].classList.add('correct');
+    }
+    fb.className='feedback-box wrong-fb';
+    fb.innerHTML='&#10008; Sbagliato. '+q.fb;
+  }
+  fb.classList.remove('hidden');
+  document.getElementById('btnNext').classList.remove('hidden');
+  document.getElementById('scoreTag').textContent=score+' / '+QS.length;
+}
+
+function nextQuestion(){
+  cur++;
+  if(cur>=QS.length) showResult();
+  else loadQ();
+}
+
+function showResult(){
+  clearInterval(timer);
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  document.getElementById('resScore').textContent=score;
+  var pct=score/QS.length*100;
+  var emoji,title,desc;
+  if(pct>=80){emoji='&#127942;';title='Ottimo lavoro!';desc='Conosci molto bene la sicurezza delle strutture temporanee. Sei pronto per le sfide sul campo.';}
+  else if(pct>=50){emoji='&#128077;';title='Buona base!';desc='Hai una discreta conoscenza delle strutture temporanee. Rivedi i punti in cui hai sbagliato per migliorare.';}
+  else{emoji='&#128170;';title='Da approfondire';desc='Le strutture temporanee richiedono attenzione su molti aspetti. Rileggi il modulo e riprova il quiz.';}
+  document.getElementById('resTitle').innerHTML=emoji+' '+title;
+  document.getElementById('resText').textContent=desc;
+}
+
+function resetGame(){
+  clearInterval(timer);
+  cur=0;score=0;
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('instrPage').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M6 – Abbina i DPI: Protezione sul Lavoro</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#BF360C,#E64A19,#FF5722);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#BF360C,#E64A19);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#BF360C}.btn-white:hover{background:#FBE9E7}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.hidden{display:none!important}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#BF360C}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#FBE9E7;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#BF360C;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#BF360C,#E64A19);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:10px 16px;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0;flex:1}
+.status-bar{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#888;flex-shrink:0}
+.score-tag{background:#FBE9E7;color:#BF360C;padding:3px 10px;border-radius:12px;font-weight:700}
+.game-area{display:flex;gap:12px;flex:1;min-height:0;overflow:hidden}
+.items-col{width:280px;display:flex;flex-direction:column;gap:5px;overflow-y:auto;padding-right:4px;flex-shrink:0}
+.drag-item{padding:8px 10px;border:2px solid #E0E0E0;border-radius:8px;font-size:11px;color:#333;cursor:grab;transition:all .2s;background:#fff;line-height:1.4;flex-shrink:0;user-select:none}
+.drag-item:hover{border-color:#E64A19;background:#FBE9E7}
+.drag-item.dragging{opacity:.4;border-style:dashed}
+.drag-item.placed{display:none}
+.cats-col{flex:1;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.cat-zone{border:2px dashed #BDBDBD;border-radius:10px;padding:6px 8px;transition:all .2s;flex-shrink:0;min-height:90px}
+.cat-zone.over{border-color:#E64A19;background:#FBE9E7}
+.cat-zone .cat-title{font-size:12px;font-weight:700;color:#BF360C;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.cat-zone .cat-title .cat-icon{font-size:16px}
+.cat-zone .cat-slots{display:flex;flex-direction:column;gap:3px}
+.cat-slot{padding:5px 8px;border:1px dashed #ccc;border-radius:6px;font-size:10px;color:#aaa;min-height:26px;display:flex;align-items:center;transition:all .2s}
+.cat-slot.filled{border-style:solid;border-color:#2E7D32;background:#E8F5E9;color:#1B5E20;font-weight:600;font-size:11px}
+.cat-slot.wrong-flash{border-color:#C62828;background:#FFEBEE;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#BF360C,#E64A19);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#BF360C}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#BF360C,#E64A19);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#129509; Abbina i DPI &#8212; Protezione sul Lavoro</h1><p>Modulo 6 &#8212; Dispositivi di protezione individuale e collettiva</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#129509;</div>
+    <h2>Abbina ogni DPI alla categoria corretta</h2>
+    <p>Associa ogni dispositivo di protezione alla categoria corretta. Trascina i 12 dispositivi nelle 4 zone di destinazione. Ogni categoria accetta 3 dispositivi.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Trascina il dispositivo</div>
+      <div class="how-step"><span class="num">2</span>Rilascialo nella zona</div>
+      <div class="how-step"><span class="num">3</span>Verde = corretto!</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="status-bar">
+      <span>Posizionati: <span id="placedCount">0</span> di 12</span>
+      <span class="score-tag" id="scoreTag">Errori: 0</span>
+    </div>
+    <div class="game-area">
+      <div class="items-col" id="itemsCol"></div>
+      <div class="cats-col" id="catsCol"></div>
+    </div>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 12</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS=[
+  {id:"uditiva",name:"Protezione Uditiva",icon:"&#128266;",items:["Cuffie antirumore certificate EN 352","Tappi auricolari monouso","Archetti antirumore per uso intermittente"]},
+  {id:"anticaduta",name:"Protezione Anticaduta",icon:"&#9889;",items:["Imbracatura di sicurezza con attacco dorsale","Cordino di trattenuta con assorbitore","Linea vita temporanea certificata"]},
+  {id:"respiratoria",name:"Protezione Respiratoria",icon:"&#128168;",items:["Mascherina FFP2 per polveri sottili","Semimaschera con filtri intercambiabili","Maschera a pieno facciale per vapori chimici"]},
+  {id:"corpo",name:"Protezione Mani e Corpo",icon:"&#128400;",items:["Guanti antitaglio per montaggio strutture","Guanti chimici in nitrile","Indumenti ad alta visibilita' certificati"]}
+];
+
+let errors=0,placedTotal=0,itemCatMap={},firstAttempt={};
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startGame(){
+  document.getElementById('instrPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.remove('hidden');
+  errors=0;placedTotal=0;itemCatMap={};firstAttempt={};
+  buildGame();
+}
+
+function buildGame(){
+  const ic=document.getElementById('itemsCol');
+  const cc=document.getElementById('catsCol');
+  ic.innerHTML='';cc.innerHTML='';
+
+  let allItems=[];
+  CATS.forEach(c=>{
+    c.items.forEach(item=>{
+      itemCatMap[item]=c.id;
+      firstAttempt[item]=true;
+      allItems.push(item);
+    });
+  });
+  allItems=shuffle(allItems);
+
+  allItems.forEach(item=>{
+    const d=document.createElement('div');
+    d.className='drag-item';d.textContent=item;d.draggable=true;
+    d.dataset.item=item;
+    d.addEventListener('dragstart',e=>{
+      e.dataTransfer.setData('text/plain',item);
+      d.classList.add('dragging');
+    });
+    d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+    ic.appendChild(d);
+  });
+
+  CATS.forEach(c=>{
+    const zone=document.createElement('div');
+    zone.className='cat-zone';zone.dataset.cat=c.id;
+    zone.innerHTML='<div class="cat-title"><span class="cat-icon">'+c.icon+'</span>'+c.name+'</div><div class="cat-slots"></div>';
+    const slotsDiv=zone.querySelector('.cat-slots');
+    for(let i=0;i<3;i++){
+      const slot=document.createElement('div');
+      slot.className='cat-slot';slot.textContent='Trascina qui...';slot.dataset.catId=c.id;slot.dataset.slotIdx=i;slot.dataset.filled='false';
+      slotsDiv.appendChild(slot);
+    }
+    zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('over');});
+    zone.addEventListener('dragleave',()=>zone.classList.remove('over'));
+    zone.addEventListener('drop',e=>{
+      e.preventDefault();zone.classList.remove('over');
+      const item=e.dataTransfer.getData('text/plain');
+      handleDrop(item,c.id,zone);
+    });
+    cc.appendChild(zone);
+  });
+  updateStatus();
+}
+
+function handleDrop(item,catId,zone){
+  const correctCat=itemCatMap[item];
+  if(correctCat===catId){
+    const slots=zone.querySelectorAll('.cat-slot');
+    let placed=false;
+    for(let s of slots){
+      if(s.dataset.filled==='false'){
+        s.textContent=item;s.classList.add('filled');s.dataset.filled='true';
+        placed=true;break;
+      }
+    }
+    if(!placed)return;
+    const dragEl=document.querySelector('.drag-item[data-item="'+CSS.escape(item)+'"]');
+    if(dragEl)dragEl.classList.add('placed');
+    placedTotal++;
+    updateStatus();
+    if(placedTotal>=12)setTimeout(showResult,600);
+  } else {
+    if(firstAttempt[item]){
+      firstAttempt[item]=false;
+      errors++;
+      updateStatus();
+    }
+    const slots=zone.querySelectorAll('.cat-slot');
+    let emptySlot=null;
+    for(let s of slots){if(s.dataset.filled==='false'){emptySlot=s;break;}}
+    if(emptySlot){
+      emptySlot.classList.add('wrong-flash');
+      setTimeout(()=>emptySlot.classList.remove('wrong-flash'),500);
+    }
+  }
+}
+
+function updateStatus(){
+  document.getElementById('placedCount').textContent=placedTotal;
+  document.getElementById('scoreTag').textContent='Errori: '+errors;
+}
+
+function showResult(){
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  const correct=12-errors;
+  document.getElementById('resScore').textContent=correct;
+  let e,t,d;
+  const pct=correct/12*100;
+  if(pct>=80){e='&#127942;';t='Eccellente!';d='Conosci perfettamente i dispositivi di protezione e le loro categorie. Ottima padronanza dei DPI per la sicurezza negli eventi.';}
+  else if(pct>=50){e='&#128077;';t='Buon lavoro!';d='Hai una buona conoscenza dei DPI. Rivedi le categorie in cui hai commesso errori per completare la preparazione.';}
+  else{e='&#128170;';t='Da ripassare';d='I dispositivi di protezione sono fondamentali per la sicurezza. Rileggi il modulo sui DPI e DPC e riprova il gioco.';}
+  document.getElementById('resTitle').innerHTML=e+' '+t;
+  document.getElementById('resText').textContent=d;
+}
+
+function resetGame(){
+  errors=0;placedTotal=0;
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('instrPage').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

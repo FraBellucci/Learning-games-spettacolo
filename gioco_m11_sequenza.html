@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M11 – Sequenza: Coordinamento Emergenze</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#D84315,#E64A19,#F4511E);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#D84315,#E64A19);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#D84315}.btn-white:hover{background:#FBE9E7}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.hidden{display:none!important}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#D84315}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#FBE9E7;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#D84315;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#D84315,#E64A19);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:14px 20px;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0;flex:1}
+.round-info{text-align:center;flex-shrink:0}
+.round-title{font-size:13px;font-weight:700;color:#D84315}
+.round-desc{font-size:11px;color:#666;margin-top:2px}
+.seq-area{display:flex;gap:14px;flex:1;min-height:0;overflow:hidden}
+.seq-col{flex:1;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.seq-col h3{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0;margin-bottom:2px}
+.seq-item{padding:9px 11px;border:2px solid #E0E0E0;border-radius:8px;font-size:11px;color:#333;cursor:pointer;transition:all .2s;background:#fff;line-height:1.4;flex-shrink:0}
+.seq-item:hover{border-color:#E64A19;background:#FBE9E7}
+.seq-item.used{opacity:.4;cursor:default;border-style:dashed}
+.drop-slot{padding:9px 11px;border:2px dashed #BDBDBD;border-radius:8px;font-size:11px;color:#999;min-height:38px;display:flex;align-items:center;transition:all .2s;flex-shrink:0}
+.drop-slot.filled{border-style:solid;border-color:#E64A19;background:#FBE9E7;color:#BF360C;font-weight:600;cursor:pointer}
+.drop-slot.correct{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20}
+.drop-slot.wrong{border-color:#C62828;background:#FFEBEE;color:#B71C1C}
+.bottom-bar{display:flex;justify-content:space-between;align-items:center;flex-shrink:0;margin-top:4px}
+.feedback-bar{font-size:12px;font-weight:600;padding:4px 12px;border-radius:6px}
+.feedback-bar.ok{background:#E8F5E9;color:#1B5E20}
+.feedback-bar.ko{background:#FFEBEE;color:#B71C1C}
+.btn-check{background:linear-gradient(135deg,#D84315,#E64A19);color:#fff;padding:9px 24px;font-size:12px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-check:disabled{opacity:.5;cursor:default}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#D84315,#E64A19);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#D84315}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#D84315,#E64A19);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#128221; Sequenza &#8212; Coordinamento Emergenze</h1><p>Modulo 11 &#8212; Ruoli e squadre nelle emergenze</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#128221;</div>
+    <h2>Ordina le fasi del coordinamento!</h2>
+    <p>Clicca sulle azioni nella colonna sinistra nell'ordine corretto per inserirle negli slot a destra. 3 round con 5 fasi ciascuno. Clicca su uno slot compilato per rimuoverlo.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Clicca nell'ordine</div>
+      <div class="how-step"><span class="num">2</span>Riempi gli slot</div>
+      <div class="how-step"><span class="num">3</span>Verifica la sequenza</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+  <div class="page game-page hidden" id="gamePage">
+    <div class="round-info"><div class="round-title" id="roundTitle">Round 1 di 3</div><div class="round-desc" id="roundDesc"></div></div>
+    <div class="seq-area">
+      <div class="seq-col" id="sourceCol"><h3>Azioni disponibili</h3></div>
+      <div class="seq-col" id="targetCol"><h3>Ordine corretto</h3></div>
+    </div>
+    <div class="bottom-bar">
+      <div class="feedback-bar hidden" id="fbBar"></div>
+      <button class="btn-check" id="btnCheck" onclick="checkOrder()" disabled>Controlla ordine</button>
+    </div>
+  </div>
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den" id="resDen">su 3</div></div>
+    <h2 id="resTitle"></h2><p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+<script>
+var ROUNDS=[
+  {title:"Attivazione del piano di emergenza durante un evento",desc:"Ordina le fasi dall'allerta iniziale alla chiusura dell'emergenza.",steps:["Rilevamento della situazione di emergenza e allerta","Attivazione della catena di comando e comunicazione ai responsabili","Coordinamento delle squadre operative sul campo","Esecuzione delle procedure di evacuazione del pubblico","Verifica dell'area e comunicazione di fine emergenza"]},
+  {title:"Organizzazione di una simulazione di emergenza",desc:"Ordina i passaggi per pianificare e condurre una simulazione efficace.",steps:["Definizione degli obiettivi e dello scenario della simulazione","Assegnazione dei ruoli: responsabili, squadre operative e osservatori","Briefing a tutti i partecipanti sulle procedure da testare","Esecuzione della simulazione con cronometraggio delle fasi","Debriefing e analisi dei risultati per migliorare i tempi di risposta"]},
+  {title:"Costruzione del sistema integrato di coordinamento",desc:"Ordina le fasi per creare un sistema di coordinamento efficace.",steps:["Identificazione di tutti i soggetti coinvolti nella sicurezza","Definizione chiara dei ruoli: responsabili, squadre operative e supporto","Creazione dei protocolli di comunicazione tra i diversi livelli","Formazione congiunta del personale con esercitazioni pratiche","Verifica periodica del sistema tramite simulazioni e audit"]}
+];
+var curRound=0,score=0,placed=[],nextSlot=0;
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function startGame(){document.getElementById('instrPage').classList.add('hidden');document.getElementById('gamePage').classList.remove('hidden');curRound=0;score=0;loadRound();}
+function loadRound(){var r=ROUNDS[curRound];placed=new Array(r.steps.length).fill(null);nextSlot=0;document.getElementById('roundTitle').textContent='Round '+(curRound+1)+' di '+ROUNDS.length;document.getElementById('roundDesc').textContent=r.desc;document.getElementById('fbBar').classList.add('hidden');document.getElementById('btnCheck').disabled=true;document.getElementById('btnCheck').textContent='Controlla ordine';document.getElementById('btnCheck').onclick=checkOrder;var src=document.getElementById('sourceCol');var tgt=document.getElementById('targetCol');src.innerHTML='<h3>Azioni disponibili</h3>';tgt.innerHTML='<h3>Ordine corretto</h3>';var mixed=shuffle(r.steps.slice());for(var i=0;i<mixed.length;i++){var d=document.createElement('div');d.className='seq-item';d.textContent=mixed[i];d.dataset.text=mixed[i];d.onclick=(function(el){return function(){clickSource(el);};})(d);src.appendChild(d);}for(var i=0;i<r.steps.length;i++){var slot=document.createElement('div');slot.className='drop-slot';slot.textContent=(i+1)+'. Clicca un\'azione';slot.dataset.idx=i;slot.onclick=(function(s,idx){return function(){clickSlot(s,idx);};})(slot,i);tgt.appendChild(slot);}}
+function clickSource(el){if(el.classList.contains('used'))return;var idx=findNextEmpty();if(idx===-1)return;placed[idx]=el.dataset.text;el.classList.add('used');var slots=document.getElementById('targetCol').querySelectorAll('.drop-slot');slots[idx].textContent=(idx+1)+'. '+el.dataset.text;slots[idx].classList.add('filled');checkReady();}
+function findNextEmpty(){for(var i=0;i<placed.length;i++){if(placed[i]===null)return i;}return -1;}
+function clickSlot(slot,idx){if(!slot.classList.contains('filled'))return;var txt=placed[idx];placed[idx]=null;slot.textContent=(idx+1)+'. Clicca un\'azione';slot.classList.remove('filled');var items=document.getElementById('sourceCol').querySelectorAll('.seq-item');for(var i=0;i<items.length;i++){if(items[i].dataset.text===txt){items[i].classList.remove('used');break;}}checkReady();}
+function checkReady(){var allFilled=true;for(var i=0;i<placed.length;i++){if(placed[i]===null){allFilled=false;break;}}document.getElementById('btnCheck').disabled=!allFilled;}
+function checkOrder(){var r=ROUNDS[curRound];var correct=0;var slots=document.getElementById('targetCol').querySelectorAll('.drop-slot');for(var i=0;i<slots.length;i++){if(placed[i]===r.steps[i]){slots[i].classList.add('correct');correct++;}else{slots[i].classList.add('wrong');slots[i].textContent=(i+1)+'. '+placed[i]+' (era: '+r.steps[i]+')';}}var items=document.getElementById('sourceCol').querySelectorAll('.seq-item');for(var i=0;i<items.length;i++)items[i].onclick=null;var fb=document.getElementById('fbBar');if(correct===r.steps.length){score++;fb.className='feedback-bar ok';fb.textContent='Perfetto! Tutte in ordine!';}else{fb.className='feedback-bar ko';fb.textContent=correct+'/'+r.steps.length+' posizioni corrette.';}fb.classList.remove('hidden');document.getElementById('btnCheck').textContent=curRound<ROUNDS.length-1?'Prossimo round &#9654;':'Vedi risultati';document.getElementById('btnCheck').onclick=nextRound;document.getElementById('btnCheck').disabled=false;}
+function nextRound(){curRound++;if(curRound>=ROUNDS.length)showResult();else loadRound();}
+function showResult(){document.getElementById('gamePage').classList.add('hidden');document.getElementById('resultPage').classList.remove('hidden');document.getElementById('resScore').textContent=score;document.getElementById('resDen').textContent='su '+ROUNDS.length;var e,t,d;if(score===ROUNDS.length){e='&#127942;';t='Eccellente!';d='Hai ordinato correttamente tutte le sequenze di coordinamento. Sai gestire le emergenze!';}else if(score>=2){e='&#128077;';t='Quasi perfetto!';d='Buona conoscenza del coordinamento. Rivedi le sequenze sbagliate per completare la preparazione.';}else{e='&#128170;';t='Da ripassare';d='Il coordinamento delle emergenze ha un ordine preciso. Rileggi il modulo e riprova.';}document.getElementById('resTitle').innerHTML=e+' '+t;document.getElementById('resText').textContent=d;}
+function resetGame(){curRound=0;score=0;document.getElementById('resultPage').classList.add('hidden');document.getElementById('gamePage').classList.add('hidden');document.getElementById('instrPage').classList.remove('hidden');}
+</script>
+</body>
+</html>

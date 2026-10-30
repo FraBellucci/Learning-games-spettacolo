@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M8 – Word Search: Normative e Standard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#4A148C,#6A1B9A,#7B1FA2);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#4A148C,#6A1B9A);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#4A148C}.btn-white:hover{background:#F3E5F5}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.hidden{display:none!important}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#4A148C}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#F3E5F5;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#4A148C;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#4A148C,#6A1B9A);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:10px 14px;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0;flex:1}
+.game-top{display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.game-top span{font-size:12px;color:#888}
+.score-tag{background:#F3E5F5;color:#4A148C;padding:3px 10px;border-radius:12px;font-weight:700;font-size:12px}
+.game-body{display:flex;gap:12px;flex:1;min-height:0;overflow:hidden}
+.grid-wrap{flex-shrink:0;display:flex;flex-direction:column;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(15,28px);grid-template-rows:repeat(15,28px);gap:1px;user-select:none;-webkit-user-select:none}
+.cell{width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#333;background:#FAFAFA;border-radius:3px;cursor:pointer;transition:background .15s}
+.cell:hover{background:#EDE7F6}
+.cell.selecting{background:#CE93D8;color:#fff}
+.cell.found{background:#7B1FA2;color:#fff;border-radius:3px}
+.word-list{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:4px;padding-right:4px}
+.word-item{display:flex;align-items:flex-start;gap:6px;padding:5px 8px;border-radius:6px;background:#FAFAFA;border-left:3px solid #CE93D8;font-size:11px;line-height:1.4;transition:all .3s}
+.word-item.found-word{background:#F3E5F5;border-left-color:#4A148C;text-decoration:line-through;opacity:.6}
+.word-item .wname{font-weight:700;color:#4A148C;min-width:80px;flex-shrink:0}
+.word-item .wdesc{color:#777;font-size:10px}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#4A148C,#6A1B9A);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#4A148C}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#4A148C,#6A1B9A);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#128270; Word Search &#8212; Normative e Standard</h1><p>Modulo 8 &#8212; Normative internazionali per la sicurezza</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#128270;</div>
+    <h2>Trova le parole della sicurezza!</h2>
+    <p>Trova le 10 parole nascoste nella griglia! Le parole sono legate alle normative e agli standard internazionali per la sicurezza negli eventi. Seleziona le lettere trascinando il mouse sulla griglia.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Cerca le parole</div>
+      <div class="how-step"><span class="num">2</span>Trascina per selezionare</div>
+      <div class="how-step"><span class="num">3</span>Trovale tutte!</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="game-top">
+      <span>Parole trovate: <span class="score-tag" id="foundCount">0 / 10</span></span>
+      <button class="btn-start" style="padding:6px 16px;font-size:11px;margin:0" id="btnFinish" onclick="finishGame()">Termina</button>
+    </div>
+    <div class="game-body">
+      <div class="grid-wrap">
+        <div class="grid" id="grid"></div>
+      </div>
+      <div class="word-list" id="wordList"></div>
+    </div>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 10</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const WORDS=[
+  {word:"NORMATIVA",desc:"Insieme di regole e standard da rispettare"},
+  {word:"AUDIT",desc:"Verifica sistematica della conformita"},
+  {word:"CERTIFICATO",desc:"Documento che attesta la conformita"},
+  {word:"ISPEZIONE",desc:"Controllo periodico delle strutture"},
+  {word:"STANDARD",desc:"Livello di qualita e sicurezza di riferimento"},
+  {word:"RISCHIO",desc:"Probabilita che si verifichi un danno"},
+  {word:"COLLAUDO",desc:"Test finale prima della messa in opera"},
+  {word:"CONFORME",desc:"Che rispetta i requisiti previsti"},
+  {word:"SICUREZZA",desc:"Condizione di assenza di pericoli"},
+  {word:"PROCEDURA",desc:"Sequenza di azioni da seguire"}
+];
+const ROWS=15,COLS=15;
+let grid=[],wordPositions=[],foundWords=new Set(),selecting=false,startCell=null,currentCells=[];
+const DIRS=[[0,1],[1,0],[1,1],[0,-1],[-1,0],[-1,-1],[1,-1],[-1,1]];
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function buildGrid(){
+  for(let t=0;t<100;t++){
+    grid=[];wordPositions=[];
+    for(let r=0;r<ROWS;r++){grid[r]=[];for(let c=0;c<COLS;c++)grid[r][c]='';}
+    let ok=true;
+    const sorted=[...WORDS].sort((a,b)=>b.word.length-a.word.length);
+    for(const w of sorted){
+      if(!placeWord(w.word)){ok=false;break;}
+    }
+    if(ok){fillEmpty();return;}
+  }
+  // fallback: force placement
+  grid=[];for(let r=0;r<ROWS;r++){grid[r]=[];for(let c=0;c<COLS;c++)grid[r][c]='';}
+  wordPositions=[];
+  WORDS.forEach((w,i)=>{
+    for(let c=0;c<w.word.length;c++){
+      if(i<ROWS){grid[i][c]=w.word[c];}
+    }
+    const cells=[];for(let c=0;c<w.word.length;c++)cells.push([Math.min(i,ROWS-1),c]);
+    wordPositions.push({word:w.word,cells:cells});
+  });
+  fillEmpty();
+}
+
+function placeWord(word){
+  const dirs=shuffle([...DIRS]);
+  const positions=[];
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++)positions.push([r,c]);
+  shuffle(positions);
+  for(const d of dirs){
+    for(const [sr,sc] of positions){
+      if(canPlace(word,sr,sc,d[0],d[1])){
+        doPlace(word,sr,sc,d[0],d[1]);
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+function canPlace(word,r,c,dr,dc){
+  for(let i=0;i<word.length;i++){
+    const nr=r+dr*i,nc=c+dc*i;
+    if(nr<0||nr>=ROWS||nc<0||nc>=COLS)return false;
+    if(grid[nr][nc]!==''&&grid[nr][nc]!==word[i])return false;
+  }
+  return true;
+}
+
+function doPlace(word,r,c,dr,dc){
+  const cells=[];
+  for(let i=0;i<word.length;i++){
+    const nr=r+dr*i,nc=c+dc*i;
+    grid[nr][nc]=word[i];
+    cells.push([nr,nc]);
+  }
+  wordPositions.push({word:word,cells:cells});
+}
+
+function fillEmpty(){
+  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    if(grid[r][c]==='')grid[r][c]=letters[Math.floor(Math.random()*26)];
+  }
+}
+
+function renderGrid(){
+  const el=document.getElementById('grid');
+  el.innerHTML='';
+  for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+    const cell=document.createElement('div');
+    cell.className='cell';cell.textContent=grid[r][c];
+    cell.dataset.r=r;cell.dataset.c=c;
+    cell.addEventListener('mousedown',onMouseDown);
+    cell.addEventListener('mouseenter',onMouseEnter);
+    cell.addEventListener('mouseup',onMouseUp);
+    el.appendChild(cell);
+  }
+  document.addEventListener('mouseup',globalMouseUp);
+}
+
+function renderWordList(){
+  const el=document.getElementById('wordList');
+  el.innerHTML='';
+  WORDS.forEach(w=>{
+    const div=document.createElement('div');
+    div.className='word-item';div.id='wl_'+w.word;
+    div.innerHTML='<span class="wname">'+w.word+'</span><span class="wdesc">'+w.desc+'</span>';
+    el.appendChild(div);
+  });
+}
+
+function getCell(r,c){return document.querySelector('.cell[data-r="'+r+'"][data-c="'+c+'"]');}
+
+function getCellsInLine(r1,c1,r2,c2){
+  const dr=Math.sign(r2-r1),dc=Math.sign(c2-c1);
+  if(r1===r2&&c1===c2)return[[r1,c1]];
+  // must be straight line
+  const diffR=Math.abs(r2-r1),diffC=Math.abs(c2-c1);
+  if(diffR!==0&&diffC!==0&&diffR!==diffC)return null;
+  const steps=Math.max(diffR,diffC);
+  const cells=[];
+  for(let i=0;i<=steps;i++){
+    cells.push([r1+dr*i,c1+dc*i]);
+  }
+  return cells;
+}
+
+function clearSelection(){
+  currentCells.forEach(([r,c])=>{
+    const cell=getCell(r,c);
+    if(cell&&!cell.classList.contains('found'))cell.classList.remove('selecting');
+  });
+  currentCells=[];
+}
+
+function onMouseDown(e){
+  e.preventDefault();
+  selecting=true;
+  const r=parseInt(e.target.dataset.r),c=parseInt(e.target.dataset.c);
+  startCell=[r,c];
+  clearSelection();
+  currentCells=[[r,c]];
+  if(!e.target.classList.contains('found'))e.target.classList.add('selecting');
+}
+
+function onMouseEnter(e){
+  if(!selecting||!startCell)return;
+  e.preventDefault();
+  const r=parseInt(e.target.dataset.r),c=parseInt(e.target.dataset.c);
+  clearSelection();
+  const line=getCellsInLine(startCell[0],startCell[1],r,c);
+  if(!line){currentCells=[[startCell[0],startCell[1]]];getCell(startCell[0],startCell[1]).classList.add('selecting');return;}
+  currentCells=line;
+  line.forEach(([lr,lc])=>{
+    const cell=getCell(lr,lc);
+    if(cell&&!cell.classList.contains('found'))cell.classList.add('selecting');
+  });
+}
+
+function onMouseUp(e){
+  if(!selecting)return;
+  checkSelection();
+}
+
+function globalMouseUp(){
+  if(!selecting)return;
+  checkSelection();
+}
+
+function checkSelection(){
+  selecting=false;
+  if(currentCells.length<2){clearSelection();startCell=null;return;}
+  const selected=currentCells.map(([r,c])=>grid[r][c]).join('');
+  const reversed=[...selected].reverse().join('');
+  let matched=null;
+  for(const wp of wordPositions){
+    if(foundWords.has(wp.word))continue;
+    if(selected===wp.word||reversed===wp.word){
+      // verify cells match
+      const forward=selected===wp.word;
+      matched=wp.word;break;
+    }
+  }
+  // Also check by cells directly
+  if(!matched){
+    for(const wp of wordPositions){
+      if(foundWords.has(wp.word))continue;
+      const w=wp.word;
+      if(selected===w||reversed===w){matched=w;break;}
+    }
+  }
+  if(matched){
+    foundWords.add(matched);
+    currentCells.forEach(([r,c])=>{
+      const cell=getCell(r,c);
+      cell.classList.remove('selecting');
+      cell.classList.add('found');
+    });
+    const wl=document.getElementById('wl_'+matched);
+    if(wl)wl.classList.add('found-word');
+    document.getElementById('foundCount').textContent=foundWords.size+' / 10';
+    if(foundWords.size===WORDS.length)setTimeout(()=>finishGame(),600);
+  } else {
+    clearSelection();
+  }
+  startCell=null;
+}
+
+function startGame(){
+  document.getElementById('instrPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.remove('hidden');
+  foundWords=new Set();
+  buildGrid();
+  renderGrid();
+  renderWordList();
+  document.getElementById('foundCount').textContent='0 / 10';
+}
+
+function finishGame(){
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  const s=foundWords.size;
+  document.getElementById('resScore').textContent=s;
+  let e,t,d;
+  if(s>=8){e='&#127942;';t='Eccellente!';d='Hai trovato quasi tutte le parole! Conosci bene il vocabolario delle normative internazionali per la sicurezza negli eventi.';}
+  else if(s>=5){e='&#128077;';t='Buon lavoro!';d='Hai trovato diverse parole chiave. Riprova per scovare anche quelle mancanti e completare la tua conoscenza delle normative.';}
+  else{e='&#128170;';t='Continua a cercare!';d='Le normative internazionali hanno un vocabolario specifico. Rileggi il modulo e riprova per migliorare.';}
+  document.getElementById('resTitle').innerHTML=e+' '+t;
+  document.getElementById('resText').textContent=d;
+}
+
+function resetGame(){
+  foundWords=new Set();selecting=false;startCell=null;currentCells=[];
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('instrPage').classList.remove('hidden');
+}
+</script>
+</body>
+</html>

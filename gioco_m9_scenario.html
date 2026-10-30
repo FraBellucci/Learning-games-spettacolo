@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M9 – Scenario: Prevenzione e Cultura della Sicurezza</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#1B5E20,#2E7D32,#43A047);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#1B5E20}.btn-white:hover{background:#E8F5E9}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.hidden{display:none!important}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#1B5E20}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#E8F5E9;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#1B5E20;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:12px 18px;display:flex;flex-direction:column;gap:7px;overflow:hidden;min-height:0;flex:1}
+.top-bar{display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.q-counter{font-size:11px;color:#888}
+.score-tag{background:#E8F5E9;color:#1B5E20;padding:3px 10px;border-radius:12px;font-weight:700;font-size:11px}
+.scenario-card{background:#E8F5E9;border-left:4px solid #1B5E20;border-radius:8px;padding:12px 14px;font-size:12px;color:#333;line-height:1.5;flex-shrink:0}
+.scenario-card .scenario-label{font-size:10px;color:#1B5E20;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:4px}
+.options-grid{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.opt-btn{padding:9px 12px;border:2px solid #e0e0e0;border-radius:8px;background:#fff;cursor:pointer;font-size:11px;font-weight:500;text-align:left;transition:all .2s;color:#333;line-height:1.4}
+.opt-btn:hover:not(:disabled){border-color:#2E7D32;background:#E8F5E9}
+.opt-btn.correct{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20;font-weight:700}
+.opt-btn.wrong{border-color:#C62828;background:#FFEBEE;color:#B71C1C}
+.opt-btn:disabled{cursor:default}
+.feedback-box{border-radius:8px;padding:8px 12px;font-size:11px;line-height:1.4;flex-shrink:0}
+.feedback-box.correct-fb{background:#E8F5E9;border-left:4px solid #2E7D32;color:#1B5E20}
+.feedback-box.wrong-fb{background:#FFEBEE;border-left:4px solid #C62828;color:#B71C1C}
+.btn-next{align-self:flex-end;background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;padding:7px 18px;font-size:12px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#1B5E20,#2E7D32);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#1B5E20}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#127919; Scenario &#8212; Prevenzione e Cultura Sicurezza</h1><p>Modulo 9 &#8212; Eliminare i rischi alla fonte</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#127919;</div>
+    <h2>Affronta gli scenari di prevenzione!</h2>
+    <p>Ti troverai in 10 situazioni reali legate alla prevenzione dei rischi e alla cultura della sicurezza. Scegli l'azione migliore in ogni scenario.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Leggi lo scenario</div>
+      <div class="how-step"><span class="num">2</span>Scegli l'azione migliore</div>
+      <div class="how-step"><span class="num">3</span>Scopri il risultato</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+  <div class="page game-page hidden" id="gamePage">
+    <div class="top-bar"><span class="q-counter">Scenario <span id="qNum">1</span> di 10</span><span class="score-tag" id="scoreTag">0 / 10</span></div>
+    <div class="scenario-card"><div class="scenario-label" id="scLabel">Scenario 1</div><div id="scText"></div></div>
+    <div class="options-grid" id="optGrid"></div>
+    <div class="feedback-box hidden" id="feedbackBox"></div>
+    <button class="btn-next hidden" id="btnNext" onclick="nextQ()">Prossimo &#9654;</button>
+  </div>
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 10</div></div>
+    <h2 id="resTitle"></h2><p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+<script>
+var QS=[
+  {scenario:"Un tecnico nota che un cavo elettrico attraversa il percorso pedonale dietro il palco, creando rischio di inciampo.",options:["Segnalare il rischio con nastro adesivo colorato sul cavo","Eliminare il rischio alla fonte: spostare il cavo o coprirlo con una canalina passacavi","Avvisare verbalmente i colleghi di fare attenzione","Ignorare il problema perche' il pubblico non passa da li'"],correct:1,fb:"La prevenzione efficace elimina il rischio alla fonte. Spostare il cavo o usare una canalina rimuove il pericolo invece di limitarsi a segnalarlo."},
+  {scenario:"Il responsabile sicurezza vuole migliorare la comunicazione dei rischi durante il montaggio. Quale approccio e' piu' efficace?",options:["Affiggere cartelli con le norme di sicurezza nei punti strategici","Organizzare briefing quotidiani con messaggi chiari e specifici per ogni fase","Inviare un'email generale a tutto il personale prima dell'evento","Distribuire il manuale di sicurezza completo a tutti"],correct:1,fb:"La comunicazione efficace richiede messaggi chiari, specifici e tempestivi. I briefing quotidiani permettono di adattare le informazioni alle fasi di lavoro in corso."},
+  {scenario:"Un lavoratore segnala che un materiale per le scenografie emette fumi irritanti. Come procedere?",options:["Aprire le finestre per ventilare l'ambiente","Sostituire il materiale con un'alternativa meno pericolosa","Fornire mascherine al personale che lavora vicino","Continuare a usarlo limitando il tempo di esposizione"],correct:1,fb:"Sostituire materiali pericolosi con alternative sicure e' il principio di sostituzione, secondo nella gerarchia dei controlli dopo l'eliminazione del rischio."},
+  {scenario:"Un'azienda vuole incentivare il personale a segnalare situazioni di rischio. Quale strategia funziona meglio?",options:["Introdurre sanzioni per chi non segnala i rischi","Creare un sistema di premi e riconoscimento per chi segnala","Nominare un solo responsabile per raccogliere le segnalazioni","Affiggere una cassetta dei suggerimenti anonima"],correct:1,fb:"Il riconoscimento positivo delle segnalazioni incoraggia il coinvolgimento attivo di tutti e rafforza la cultura della sicurezza."},
+  {scenario:"Le barriere del pubblico non sono installate correttamente e lo spettacolo inizia tra 30 minuti.",options:["Iniziare lo spettacolo e correggere le barriere alla prima pausa","Ritardare l'apertura al pubblico fino al completamento della correzione","Ridurre la capienza dell'area per compensare","Posizionare personale aggiuntivo al posto delle barriere"],correct:1,fb:"Le soluzioni tecniche hanno priorita' sulle misure organizzative. Non si deve aprire al pubblico con protezioni inadeguate."},
+  {scenario:"Un nuovo tecnico del suono lavora per la prima volta con livelli di rumore elevati. Cosa deve fare il datore di lavoro?",options:["Fornire tappi per le orecchie e procedere","Verificare i livelli di esposizione e formare il lavoratore sui rischi specifici","Limitare il turno del nuovo tecnico a 4 ore","Assegnarlo a un collega esperto che lo supervisioni"],correct:1,fb:"Prima di esporre un lavoratore a rischi specifici e' obbligatorio verificare i livelli e fornire formazione specifica."},
+  {scenario:"Un lavoratore propone di installare tappeti antiscivolo in un'area backstage frequentemente bagnata.",options:["Valutare la proposta nella prossima riunione di sicurezza","Implementare subito la soluzione e comunicarla a tutto il team","Spiegare che non e' previsto dal piano di sicurezza","Chiedere di formalizzare la proposta per iscritto"],correct:1,fb:"Implementare subito una buona proposta rafforza la cultura della prevenzione e incentiva il coinvolgimento attivo dei lavoratori."},
+  {scenario:"L'azienda pianifica la formazione annuale sulla sicurezza. Quale metodo garantisce il maggiore coinvolgimento?",options:["Distribuire un manuale aggiornato e un test scritto","Organizzare sessioni interattive con simulazioni pratiche","Proiettare video formativi seguiti da una verifica a quiz","Programmare una giornata di formazione teorica in aula"],correct:1,fb:"Le simulazioni pratiche permettono di sperimentare i rischi in modo sicuro, aumentando coinvolgimento e memorizzazione."},
+  {scenario:"Diversi lavoratori non indossano i DPI nell'area di carico. Come intervenire?",options:["Emettere una circolare che ricorda l'obbligo dei DPI","Parlare direttamente con i lavoratori, capire le ragioni e trovare soluzioni","Applicare immediatamente le sanzioni previste","Installare telecamere per monitorare l'uso dei DPI"],correct:1,fb:"Capire le ragioni del mancato utilizzo permette di risolvere il problema alla radice, migliorando compliance e cultura."},
+  {scenario:"Un'impresa vuole valutare l'efficacia del proprio sistema di prevenzione. Quale strumento utilizzare?",options:["Confrontare il numero di infortuni con l'anno precedente","Condurre audit interni analizzando procedure, segnalazioni e near miss","Chiedere un parere informale ai capi reparto","Verificare solo la conformita' ai requisiti normativi minimi"],correct:1,fb:"Gli audit interni sono lo strumento piu' completo: analizzano procedure, segnalazioni, near miss e coinvolgimento per individuare aree di miglioramento."}
+];
+var cur=0,score=0,order=[];
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function startGame(){document.getElementById('instrPage').classList.add('hidden');document.getElementById('gamePage').classList.remove('hidden');order=shuffle(Array.apply(null,{length:QS.length}).map(function(_,i){return i;}));cur=0;score=0;loadQ();}
+function loadQ(){var q=QS[order[cur]];document.getElementById('qNum').textContent=cur+1;document.getElementById('scoreTag').textContent=score+' / '+QS.length;document.getElementById('scLabel').textContent='Scenario '+(cur+1);document.getElementById('scText').textContent=q.scenario;document.getElementById('feedbackBox').classList.add('hidden');document.getElementById('btnNext').classList.add('hidden');var grid=document.getElementById('optGrid');grid.innerHTML='';var indices=[0,1,2,3];shuffle(indices);for(var k=0;k<indices.length;k++){var b=document.createElement('button');b.className='opt-btn';b.textContent=String.fromCharCode(65+k)+') '+q.options[indices[k]];b.dataset.origIdx=indices[k];b.onclick=(function(btn){return function(){answer(btn);};})(b);grid.appendChild(b);}}
+function answer(btn){var q=QS[order[cur]];var chosen=parseInt(btn.dataset.origIdx);var btns=document.querySelectorAll('.opt-btn');for(var i=0;i<btns.length;i++){btns[i].disabled=true;if(parseInt(btns[i].dataset.origIdx)===q.correct)btns[i].classList.add('correct');}var fb=document.getElementById('feedbackBox');if(chosen===q.correct){score++;fb.className='feedback-box correct-fb';fb.innerHTML='&#10004; Scelta corretta! '+q.fb;}else{btn.classList.add('wrong');fb.className='feedback-box wrong-fb';fb.innerHTML='&#10008; Non ottimale. '+q.fb;}fb.classList.remove('hidden');document.getElementById('btnNext').classList.remove('hidden');document.getElementById('scoreTag').textContent=score+' / '+QS.length;}
+function nextQ(){cur++;if(cur>=QS.length)showResult();else loadQ();}
+function showResult(){document.getElementById('gamePage').classList.add('hidden');document.getElementById('resultPage').classList.remove('hidden');document.getElementById('resScore').textContent=score;var pct=score/QS.length*100;var e,t,d;if(pct>=80){e='&#127942;';t='Ottimo lavoro!';d='Eccellente comprensione della prevenzione e della cultura della sicurezza.';}else if(pct>=50){e='&#128077;';t='Buona base!';d='Conosci i principi della prevenzione ma puoi migliorare. Rivedi gli scenari sbagliati.';}else{e='&#128170;';t='Da approfondire';d='La cultura della sicurezza richiede pratica. Rileggi il modulo e riprova.';}document.getElementById('resTitle').innerHTML=e+' '+t;document.getElementById('resText').textContent=d;}
+function resetGame(){cur=0;score=0;document.getElementById('resultPage').classList.add('hidden');document.getElementById('gamePage').classList.add('hidden');document.getElementById('instrPage').classList.remove('hidden');}
+</script>
+</body>
+</html>

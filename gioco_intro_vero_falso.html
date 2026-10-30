@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>INTRO – Vero o Falso: Sicurezza negli Eventi</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#0D47A1,#1565C0,#1E88E5);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#0D47A1,#1565C0);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#0D47A1}.btn-white:hover{background:#E3F2FD}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.progress-bar{height:4px;background:#E3F2FD;flex-shrink:0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#0D47A1,#42A5F5);transition:width .4s}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.hidden{display:none!important}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#0D47A1}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#E3F2FD;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#0D47A1;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#0D47A1,#1565C0);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:18px 24px;display:flex;flex-direction:column;gap:12px;overflow:hidden;min-height:0;flex:1}
+.status-bar{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#888;flex-shrink:0}
+.score-tag{background:#E3F2FD;color:#0D47A1;padding:3px 10px;border-radius:12px;font-weight:700}
+.question-card{background:#E3F2FD;border-left:4px solid #0D47A1;border-radius:8px;padding:16px 18px;font-size:14px;color:#333;font-weight:500;line-height:1.6;min-height:70px;display:flex;align-items:center;flex-shrink:0}
+.vf-buttons{display:flex;gap:16px;justify-content:center;flex-shrink:0}
+.vf-btn{flex:1;max-width:180px;padding:16px;border-radius:10px;font-size:20px;font-weight:700;border:2px solid;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:5px}
+.vf-btn.true-btn{background:#E8F5E9;border-color:#2E7D32;color:#1B5E20}
+.vf-btn.true-btn:hover:not(:disabled){background:#C8E6C9;transform:scale(1.05)}
+.vf-btn.false-btn{background:#FFEBEE;border-color:#C62828;color:#B71C1C}
+.vf-btn.false-btn:hover:not(:disabled){background:#FFCDD2;transform:scale(1.05)}
+.vf-btn.selected-correct{border-width:3px;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.vf-btn.selected-wrong{border-width:3px;opacity:.5}
+.vf-btn:disabled{cursor:default}
+.feedback-box{border-radius:8px;padding:11px 14px;font-size:12px;line-height:1.6;flex-shrink:0}
+.feedback-box.correct-fb{background:#E8F5E9;border-left:4px solid #2E7D32;color:#1B5E20}
+.feedback-box.wrong-fb{background:#FFEBEE;border-left:4px solid #C62828;color:#B71C1C}
+.btn-next{align-self:flex-end;background:linear-gradient(135deg,#0D47A1,#1565C0);color:#fff;padding:9px 24px;font-size:12px;border-radius:8px;font-weight:700}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#0D47A1,#1565C0);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}
+.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#0D47A1}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#0D47A1,#1565C0);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>🎪 Vero o Falso — Sicurezza negli Eventi</h1><p>Modulo Introduttivo — Principi fondamentali</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">🔄 Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">🎪</div>
+    <h2>Conosci i principi della sicurezza negli eventi?</h2>
+    <p>Il settore dello spettacolo richiede una progettazione preventiva della sicurezza. Metti alla prova le tue conoscenze con 10 affermazioni: scegli Vero o Falso per ciascuna.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Leggi l'affermazione</div>
+      <div class="how-step"><span class="num">2</span>Scegli VERO o FALSO</div>
+      <div class="how-step"><span class="num">3</span>Leggi il feedback</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="status-bar">
+      <span>Domanda <span id="qNum">1</span> di 10</span>
+      <span class="score-tag" id="scoreTag">0 corrette</span>
+    </div>
+    <div class="question-card" id="questionText"></div>
+    <div class="vf-buttons">
+      <button class="vf-btn true-btn" id="btnTrue" onclick="answer(true)">&#10004;<span style="font-size:14px">VERO</span></button>
+      <button class="vf-btn false-btn" id="btnFalse" onclick="answer(false)">&#10008;<span style="font-size:14px">FALSO</span></button>
+    </div>
+    <div class="feedback-box hidden" id="feedbackBox"></div>
+    <button class="btn-next hidden" id="btnNext" onclick="nextQuestion()">Prossima &#9654;</button>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 10</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QS=[
+  {q:"La progettazione preventiva della sicurezza e' obbligatoria per tutti gli eventi dal vivo.",a:true,fb:"<b>Vero.</b> La normativa italiana (D.Lgs. 81/2008 e successive integrazioni) impone la valutazione preventiva dei rischi per qualsiasi attivita' lavorativa, inclusi gli eventi dal vivo e le produzioni dello spettacolo."},
+  {q:"Il piano di sicurezza di un evento deve includere solo le procedure di evacuazione.",a:false,fb:"<b>Falso.</b> Il piano di sicurezza deve essere completo: analisi dei rischi, misure preventive, procedure di emergenza, piano di evacuazione, comunicazione, responsabilita' e formazione del personale."},
+  {q:"La sicurezza negli eventi riguarda esclusivamente la protezione del pubblico.",a:false,fb:"<b>Falso.</b> La sicurezza riguarda tutti: lavoratori (tecnici, artisti, allestitori), pubblico e terzi. Il D.Lgs. 81/2008 tutela in primis i lavoratori, ma le misure devono proteggere chiunque sia presente."},
+  {q:"Un piano di emergenza efficace deve prevedere simulazioni regolari per ridurre i tempi di risposta.",a:true,fb:"<b>Vero.</b> Le simulazioni permettono di verificare l'efficacia del piano, individuare criticita' e migliorare i tempi di reazione di tutto il personale coinvolto nella gestione delle emergenze."},
+  {q:"La formazione sulla sicurezza per i lavoratori dello spettacolo e' facoltativa se l'evento dura meno di 3 giorni.",a:false,fb:"<b>Falso.</b> La formazione sulla sicurezza e' obbligatoria indipendentemente dalla durata dell'evento. Ogni lavoratore deve ricevere formazione adeguata sui rischi specifici del proprio ruolo."},
+  {q:"La progettazione preventiva richiede l'analisi dei rischi specifici legati al tipo di evento.",a:true,fb:"<b>Vero.</b> Ogni evento ha rischi specifici: un concerto all'aperto presenta rischi diversi da uno spettacolo teatrale al chiuso. L'analisi deve essere specifica e non generica."},
+  {q:"Il coordinamento tra i diversi soggetti coinvolti (organizzatore, tecnici, sicurezza) e' un elemento fondamentale della pianificazione.",a:true,fb:"<b>Vero.</b> Il coordinamento e' essenziale: l'organizzatore, i tecnici, i responsabili della sicurezza, le squadre di emergenza e le autorita' devono operare in modo sinergico secondo un piano condiviso."},
+  {q:"E' sufficiente affiggere la planimetria delle vie di fuga per garantire la sicurezza di un evento.",a:false,fb:"<b>Falso.</b> La planimetria e' solo uno degli elementi. Servono: segnaletica adeguata, illuminazione di emergenza, personale formato, vie di fuga libere e praticabili, e un piano di evacuazione testato."},
+  {q:"Il documento di valutazione dei rischi (DVR) puo' essere redatto anche durante lo svolgimento dell'evento.",a:false,fb:"<b>Falso.</b> Il DVR deve essere redatto preventivamente, prima dell'inizio delle attivita'. La progettazione preventiva e' un principio cardine: i rischi vanno identificati e mitigati prima, non durante l'evento."},
+  {q:"Le condizioni meteorologiche devono essere considerate nella pianificazione della sicurezza degli eventi outdoor.",a:true,fb:"<b>Vero.</b> Per gli eventi all'aperto, le condizioni meteo (vento, pioggia, temperatura) rappresentano un fattore di rischio significativo che deve essere incluso nel piano di sicurezza con soglie di allerta e procedure specifiche."}
+];
+
+let cur=0,score=0,order=[];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function startGame(){document.getElementById('instrPage').classList.add('hidden');document.getElementById('gamePage').classList.remove('hidden');order=shuffle([...Array(QS.length).keys()]);cur=0;score=0;loadQ();}
+function loadQ(){const q=QS[order[cur]];document.getElementById('qNum').textContent=cur+1;document.getElementById('questionText').textContent=q.q;document.getElementById('feedbackBox').classList.add('hidden');document.getElementById('btnNext').classList.add('hidden');document.getElementById('btnTrue').disabled=false;document.getElementById('btnFalse').disabled=false;document.getElementById('btnTrue').className='vf-btn true-btn';document.getElementById('btnFalse').className='vf-btn false-btn';document.getElementById('progressFill').style.width=((cur/10)*100)+'%';document.getElementById('scoreTag').textContent=score+' corrette';}
+function answer(ans){const q=QS[order[cur]];document.getElementById('btnTrue').disabled=true;document.getElementById('btnFalse').disabled=true;const fb=document.getElementById('feedbackBox');const ok=(ans===q.a);if(ok){score++;fb.className='feedback-box correct-fb';fb.innerHTML='&#10004; Corretto! '+q.fb;(ans?document.getElementById('btnTrue'):document.getElementById('btnFalse')).classList.add('selected-correct');}else{fb.className='feedback-box wrong-fb';fb.innerHTML='&#10008; Sbagliato. '+q.fb;(ans?document.getElementById('btnTrue'):document.getElementById('btnFalse')).classList.add('selected-wrong');(!ans?document.getElementById('btnTrue'):document.getElementById('btnFalse')).classList.add('selected-correct');}fb.classList.remove('hidden');document.getElementById('btnNext').classList.remove('hidden');document.getElementById('scoreTag').textContent=score+' corrette';}
+function nextQuestion(){cur++;if(cur>=QS.length)showResult();else loadQ();}
+function showResult(){document.getElementById('gamePage').classList.add('hidden');document.getElementById('resultPage').classList.remove('hidden');document.getElementById('progressFill').style.width='100%';document.getElementById('resScore').textContent=score;let e,t,d;if(score>=8){e='&#127942;';t='Ottimo lavoro!';d='Hai una solida conoscenza dei principi fondamentali della sicurezza negli eventi. Sei pronto per approfondire i moduli specifici.';}else if(score>=5){e='&#128077;';t='Buona base!';d='Conosci diversi aspetti della sicurezza negli eventi. Rivedi i punti in cui hai sbagliato per rafforzare le tue competenze.';}else{e='&#128170;';t='Da ripassare';d='I principi della sicurezza negli eventi richiedono un approfondimento. Rileggi il modulo introduttivo e riprova.';}document.getElementById('resTitle').textContent=e+' '+t;document.getElementById('resText').textContent=d;}
+function resetGame(){cur=0;score=0;document.getElementById('resultPage').classList.add('hidden');document.getElementById('gamePage').classList.add('hidden');document.getElementById('instrPage').classList.remove('hidden');document.getElementById('progressFill').style.width='0%';}
+</script>
+</body>
+</html>

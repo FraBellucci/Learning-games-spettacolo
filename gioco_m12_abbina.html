@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<title>M12 – Abbina: Produzioni Internazionali</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#5D4037,#6D4C41,#795548);display:flex;justify-content:center;align-items:center;min-height:100vh;overflow:hidden}
+.container{width:800px;height:550px;background:#fff;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);overflow:hidden;display:flex;flex-direction:column}
+.header{background:linear-gradient(135deg,#5D4037,#6D4C41);color:#fff;padding:11px 18px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.header h1{font-size:15px;font-weight:700}.header p{font-size:11px;opacity:.8;margin-top:1px}
+button{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;transition:all .2s}
+.btn-white{background:#fff;color:#5D4037}.btn-white:hover{background:#EFEBE9}
+.btn-outline{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.4)}.btn-outline:hover{background:rgba(255,255,255,.25)}
+.btn-group{display:flex;gap:8px}
+.hidden{display:none!important}
+.page{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.instr-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.instr-icon{font-size:52px}
+.instr-page h2{font-size:20px;font-weight:700;color:#5D4037}
+.instr-page p{font-size:13px;color:#555;line-height:1.7;max-width:500px}
+.how-grid{display:flex;gap:10px;margin:10px 0}
+.how-step{flex:1;background:#EFEBE9;border-radius:8px;padding:10px;text-align:center;font-size:12px;color:#5D4037;font-weight:600;line-height:1.5}
+.how-step .num{font-size:22px;display:block;margin-bottom:4px}
+.btn-start{background:linear-gradient(135deg,#5D4037,#6D4C41);color:#fff;padding:12px 32px;font-size:14px;border-radius:8px;font-weight:700;margin-top:8px;border:none;cursor:pointer}
+.btn-start:hover{transform:translateY(-2px)}
+.game-page{padding:10px 14px;display:flex;flex-direction:column;gap:8px;overflow:hidden;min-height:0;flex:1}
+.status-bar{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#888;flex-shrink:0}
+.score-tag{background:#EFEBE9;color:#5D4037;padding:3px 10px;border-radius:12px;font-weight:700}
+.game-area{display:flex;gap:10px;flex:1;min-height:0;overflow:hidden}
+.items-col{width:280px;display:flex;flex-direction:column;gap:5px;overflow-y:auto;padding-right:4px;flex-shrink:0}
+.drag-item{padding:7px 10px;border:2px solid #BDBDBD;border-radius:7px;font-size:11px;color:#333;cursor:grab;transition:all .2s;background:#fff;line-height:1.4;user-select:none}
+.drag-item:hover{border-color:#6D4C41;background:#EFEBE9}
+.drag-item.dragging{opacity:.4;border-style:dashed}
+.drag-item.placed{display:none}
+.zones-col{flex:1;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+.drop-zone{border:2px dashed #BDBDBD;border-radius:8px;padding:6px 8px;transition:all .2s;min-height:0;flex-shrink:0}
+.drop-zone.over{border-color:#6D4C41;background:#EFEBE9}
+.zone-title{font-size:12px;font-weight:700;color:#5D4037;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.zone-title .emoji{font-size:16px}
+.zone-slots{display:flex;flex-direction:column;gap:3px}
+.zone-slot{padding:5px 8px;border:1px dashed #ccc;border-radius:5px;font-size:10px;color:#999;min-height:26px;display:flex;align-items:center;transition:all .2s}
+.zone-slot.filled{border-style:solid;border-color:#6D4C41;background:#EFEBE9;color:#5D4037;font-weight:600;cursor:pointer;font-size:11px}
+.zone-slot.correct{border-color:#2E7D32;background:#E8F5E9;color:#1B5E20}
+.zone-slot.wrong{border-color:#C62828;background:#FFEBEE;color:#B71C1C}
+.bottom-bar{display:flex;justify-content:space-between;align-items:center;flex-shrink:0;margin-top:2px}
+.feedback-bar{font-size:12px;font-weight:600;padding:4px 12px;border-radius:6px}
+.feedback-bar.ok{background:#E8F5E9;color:#1B5E20}
+.feedback-bar.ko{background:#FFEBEE;color:#B71C1C}
+.btn-check{background:linear-gradient(135deg,#5D4037,#6D4C41);color:#fff;padding:8px 20px;font-size:12px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-check:disabled{opacity:.5;cursor:default}
+.result-page{padding:30px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
+.score-circle{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#5D4037,#6D4C41);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.score-circle .num{font-size:26px;font-weight:700}.score-circle .den{font-size:12px;opacity:.8}
+.result-page h2{font-size:20px;font-weight:700;color:#5D4037}
+.result-page p{font-size:13px;color:#555;max-width:440px;line-height:1.6}
+.result-btns{display:flex;gap:10px;margin-top:4px}
+.btn-replay{background:linear-gradient(135deg,#5D4037,#6D4C41);color:#fff;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+.btn-close{background:#f5f5f5;color:#333;padding:10px 24px;font-size:13px;border-radius:8px;font-weight:700;border:none;cursor:pointer}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+.shake{animation:shake .4s}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div><h1>&#127758; Abbina &#8212; Produzioni Internazionali</h1><p>Modulo 12 &#8212; Sicurezza nelle produzioni internazionali</p></div>
+    <div class="btn-group">
+      <button class="btn-outline" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-white" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+
+  <div class="page instr-page" id="instrPage">
+    <div class="instr-icon">&#127758;</div>
+    <h2>Abbina le attivit&#224; alle fasi corrette</h2>
+    <p>Associa ogni attivit&#224; alla fase corretta della gestione della sicurezza nelle produzioni internazionali. Trascina i 12 elementi nelle 4 categorie di destinazione.</p>
+    <div class="how-grid">
+      <div class="how-step"><span class="num">1</span>Trascina l'attivit&#224;</div>
+      <div class="how-step"><span class="num">2</span>Rilascia nella categoria</div>
+      <div class="how-step"><span class="num">3</span>Verifica le risposte</div>
+    </div>
+    <button class="btn-start" onclick="startGame()">Inizia il gioco &#9654;</button>
+  </div>
+
+  <div class="page game-page hidden" id="gamePage">
+    <div class="status-bar">
+      <span>Posizionati: <span id="placedCount">0</span> di 12</span>
+      <span class="score-tag" id="errTag">0 errori</span>
+    </div>
+    <div class="game-area">
+      <div class="items-col" id="itemsCol"></div>
+      <div class="zones-col" id="zonesCol"></div>
+    </div>
+    <div class="bottom-bar">
+      <div class="feedback-bar hidden" id="fbBar"></div>
+      <button class="btn-check" id="btnCheck" onclick="checkAll()" disabled>Verifica &#10004;</button>
+    </div>
+  </div>
+
+  <div class="page result-page hidden" id="resultPage">
+    <div class="score-circle"><div class="num" id="resScore">0</div><div class="den">su 12</div></div>
+    <h2 id="resTitle"></h2>
+    <p id="resText"></p>
+    <div class="result-btns">
+      <button class="btn-replay" onclick="resetGame()">&#x1F504; Rigioca</button>
+      <button class="btn-close" onclick="window.close()">Torna al corso</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CATS=[
+  {name:"Analisi Normativa Locale",emoji:"&#127758;",items:["Raccolta delle normative di sicurezza del paese ospitante","Consultazione di esperti legali locali","Verifica delle certificazioni richieste nel territorio"]},
+  {name:"Pianificazione Operativa",emoji:"&#128203;",items:["Adattamento dei protocolli di sicurezza alle norme locali","Traduzione dei documenti di sicurezza nella lingua locale","Definizione del cronoprogramma con i fusi orari"]},
+  {name:"Formazione del Personale",emoji:"&#127891;",items:["Preparazione di materiali formativi multilingue","Briefing culturale sulle prassi locali di sicurezza","Addestramento congiunto con le squadre locali"]},
+  {name:"Collaborazione con Partner Locali",emoji:"&#129309;",items:["Definizione di protocolli di comunicazione condivisi","Integrazione dei servizi di emergenza del territorio","Coordinamento con le autorità locali competenti"]}
+];
+
+let itemMap={},placed={},errors=0,checked=false;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function startGame(){
+  document.getElementById('instrPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.remove('hidden');
+  errors=0;checked=false;placed={};itemMap={};
+  document.getElementById('errTag').textContent='0 errori';
+  document.getElementById('placedCount').textContent='0';
+  document.getElementById('btnCheck').disabled=true;
+  document.getElementById('fbBar').classList.add('hidden');
+  buildGame();
+}
+
+function buildGame(){
+  const ic=document.getElementById('itemsCol');
+  const zc=document.getElementById('zonesCol');
+  ic.innerHTML='';zc.innerHTML='';
+
+  // Build item list
+  let allItems=[];
+  CATS.forEach((cat,ci)=>{
+    cat.items.forEach(item=>{
+      allItems.push({text:item,cat:ci});
+      itemMap[item]=ci;
+    });
+  });
+  shuffle(allItems);
+
+  allItems.forEach((it,idx)=>{
+    const d=document.createElement('div');
+    d.className='drag-item';d.textContent=it.text;d.draggable=true;d.dataset.text=it.text;d.dataset.id='item'+idx;
+    d.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',it.text);d.classList.add('dragging');});
+    d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+    ic.appendChild(d);
+  });
+
+  // Build zones
+  CATS.forEach((cat,ci)=>{
+    const zone=document.createElement('div');
+    zone.className='drop-zone';zone.dataset.cat=ci;
+    zone.innerHTML='<div class="zone-title"><span class="emoji">'+cat.emoji+'</span>'+cat.name+'</div><div class="zone-slots" id="slots'+ci+'"></div>';
+
+    const slotsDiv=zone.querySelector('.zone-slots');
+    for(let s=0;s<3;s++){
+      const slot=document.createElement('div');
+      slot.className='zone-slot';slot.textContent='Trascina qui';slot.dataset.cat=ci;slot.dataset.slot=s;slot.dataset.filled='';
+      slot.addEventListener('dragover',e=>{e.preventDefault();if(!slot.dataset.filled)slot.classList.add('over');});
+      slot.addEventListener('dragleave',()=>slot.classList.remove('over'));
+      slot.addEventListener('drop',e=>{
+        e.preventDefault();slot.classList.remove('over');
+        if(checked)return;
+        const txt=e.dataTransfer.getData('text/plain');
+        if(slot.dataset.filled){returnItem(slot.dataset.filled);slot.dataset.filled='';}
+        placeItem(txt,slot);
+      });
+      slot.addEventListener('click',()=>{
+        if(checked||!slot.dataset.filled)return;
+        returnItem(slot.dataset.filled);
+        slot.textContent='Trascina qui';slot.className='zone-slot';slot.dataset.filled='';
+        updateCount();
+      });
+      slotsDiv.appendChild(slot);
+    }
+
+    zone.addEventListener('dragover',e=>e.preventDefault());
+    zone.addEventListener('drop',e=>{
+      e.preventDefault();
+      if(checked)return;
+      const txt=e.dataTransfer.getData('text/plain');
+      const slots=zone.querySelectorAll('.zone-slot');
+      let target=null;
+      for(let sl of slots){if(!sl.dataset.filled){target=sl;break;}}
+      if(target)placeItem(txt,target);
+    });
+
+    zc.appendChild(zone);
+  });
+}
+
+function placeItem(txt,slot){
+  // Remove from any other slot first
+  document.querySelectorAll('.zone-slot').forEach(s=>{
+    if(s.dataset.filled===txt){s.textContent='Trascina qui';s.className='zone-slot';s.dataset.filled='';}
+  });
+  slot.dataset.filled=txt;slot.textContent=txt;slot.className='zone-slot filled';
+  // Hide item from left
+  const item=document.querySelector('.drag-item[data-text="'+CSS.escape(txt)+'"]');
+  if(item)item.classList.add('placed');
+  updateCount();
+}
+
+function returnItem(txt){
+  const item=document.querySelector('.drag-item[data-text="'+CSS.escape(txt)+'"]');
+  if(item)item.classList.remove('placed');
+}
+
+function updateCount(){
+  let c=0;
+  document.querySelectorAll('.zone-slot').forEach(s=>{if(s.dataset.filled)c++;});
+  document.getElementById('placedCount').textContent=c;
+  document.getElementById('btnCheck').disabled=(c<12);
+}
+
+function checkAll(){
+  checked=true;
+  let correct=0;
+  document.querySelectorAll('.zone-slot').forEach(s=>{
+    if(!s.dataset.filled)return;
+    const txt=s.dataset.filled;
+    const catIdx=parseInt(s.dataset.cat);
+    if(itemMap[txt]===catIdx){s.classList.add('correct');correct++;}
+    else{s.classList.add('wrong');errors++;}
+  });
+  document.getElementById('errTag').textContent=errors+' errori';
+  const fb=document.getElementById('fbBar');
+  if(correct===12){fb.className='feedback-bar ok';fb.textContent='&#10004; Perfetto! Tutti i 12 elementi sono nella categoria giusta!';}
+  else{fb.className='feedback-bar ko';fb.textContent=correct+'/12 corretti. Gli elementi in rosso sono nella categoria sbagliata.';}
+  fb.classList.remove('hidden');
+  document.getElementById('btnCheck').textContent='Vedi risultati';
+  document.getElementById('btnCheck').onclick=showResult;
+  document.getElementById('btnCheck').disabled=false;
+  // Disable dragging
+  document.querySelectorAll('.drag-item').forEach(d=>d.draggable=false);
+}
+
+function showResult(){
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('resultPage').classList.remove('hidden');
+  let correct=0;
+  document.querySelectorAll('.zone-slot.correct').forEach(()=>correct++);
+  document.getElementById('resScore').textContent=correct;
+  let e,t,d;
+  const pct=correct/12*100;
+  if(pct>=80){e='&#127942;';t='Eccellente!';d='Conosci a fondo le fasi di gestione della sicurezza nelle produzioni internazionali. Ottima preparazione per operare in contesti globali.';}
+  else if(pct>=50){e='&#128077;';t='Buon lavoro!';d='Hai una buona conoscenza della gestione internazionale della sicurezza. Rivedi le categorie in cui hai sbagliato per completare la preparazione.';}
+  else{e='&#128170;';t='Da approfondire';d='La sicurezza nelle produzioni internazionali richiede competenze specifiche. Rileggi il modulo e riprova per consolidare le conoscenze.';}
+  document.getElementById('resTitle').innerHTML=e+' '+t;
+  document.getElementById('resText').textContent=d;
+}
+
+function resetGame(){
+  checked=false;errors=0;
+  document.getElementById('resultPage').classList.add('hidden');
+  document.getElementById('gamePage').classList.add('hidden');
+  document.getElementById('instrPage').classList.remove('hidden');
+  document.getElementById('btnCheck').textContent='Verifica &#10004;';
+  document.getElementById('btnCheck').onclick=checkAll;
+}
+</script>
+</body>
+</html>
